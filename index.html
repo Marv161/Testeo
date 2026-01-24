@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaori</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+JP:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Iconos -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Configuración base */
+        body {
+            background-color: #000000;
+            background-image: 
+                radial-gradient(circle at 50% 50%, #1a0000 0%, #000000 70%),
+                linear-gradient(0deg, rgba(255,0,0,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,0,0,0.05) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Tipografía Gamer */
+        .font-gamer {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .font-jp {
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+
+        /* Efecto de Scanlines (TV vieja) */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.3) 50%,
+                rgba(0,0,0,0.3)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.4;
+        }
+
+        /* Texto Brillante Neon (Texto Central BEIGE) */
+        .neon-white-glow {
+            color: white;
+            text-shadow: 
+                0 0 10px rgba(255, 255, 255, 0.8),
+                0 0 20px rgba(255, 255, 255, 0.6),
+                0 0 40px rgba(255, 255, 255, 0.4),
+                0 0 80px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Texto Brillante Neon Rojo (LVL) */
+        .neon-text-red {
+            text-shadow: 
+                0 0 5px #fff,
+                0 0 10px #ff0000,
+                0 0 20px #ff0000;
+        }
+
+        /* Estilo para los textos flotantes "BEIGE" laterales */
+        .beige-floater {
+            position: absolute;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            color: transparent; /* Sin fondo */
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.6); /* Borde blanco */
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.4); /* Glow suave */
+            pointer-events: none;
+            z-index: 15; /* Detrás de la imagen principal */
+            opacity: 0;
+            animation: float-beige 8s linear forwards;
+            letter-spacing: 2px;
+        }
+
+        @keyframes float-beige {
+            0% { opacity: 0; transform: translateY(20px) scale(0.9); }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.5; }
+            100% { opacity: 0; transform: translateY(-50px) scale(1.1); }
+        }
+
+        /* Animación flotante para la imagen principal */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .character-img {
+            animation: float 5s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.3)); 
+            mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+        }
+
+        /* Botones Nav */
+        .nav-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            padding-bottom: 2px;
+        }
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background-color: #ff0000;
+            box-shadow: 0 0 10px #ff0000;
+            transition: left 0.3s ease;
+        }
+        .nav-btn:hover::before {
+            left: 0;
+        }
+        .nav-btn:hover {
+            color: #ffcccc;
+            text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+        }
+
+        /* Tarjetas de texto abajo */
+        .info-card {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, background 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background-color: #ff0000;
+            box-shadow: 0 0 10px #ff0000;
+        }
+        .info-card:hover {
+            transform: translateY(-5px);
+            background: rgba(30, 0, 0, 0.6);
+            border-color: rgba(255, 0, 0, 0.3);
+        }
+
+        /* --- MODALES POSICIONADOS --- */
+        .nav-item-container {
+            position: relative; 
+        }
+
+        .popup-modal {
+            position: absolute;
+            top: 150%; 
+            left: 0;    
+            
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid #ff0000;
+            padding: 20px;
+            z-index: 100;
+            
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.2);
+            min-width: 300px; 
+            width: max-content; 
+        }
+        
+        .popup-modal.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Botón de Cerrar (X) */
+        .close-btn {
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .close-btn:hover {
+            color: #ff0000;
+        }
+
+        /* Música Spinner */
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .disk-spin {
+            animation: spin-slow 8s linear infinite;
+        }
+    </style>
+</head>
+<body class="selection:bg-red-900 selection:text-white">
+
+    <!-- Efecto de pantalla -->
+    <div class="scanlines"></div>
+
+    <!-- Navegación Superior -->
+    <nav class="w-full flex justify-between items-center p-6 z-40 relative max-w-7xl mx-auto">
+        
+        <!-- Grupo de Botones a la Izquierda -->
+        <div class="flex space-x-12 font-gamer text-sm tracking-widest">
+            
+            <!-- CONTENEDOR ABOUT ME -->
+            <div class="nav-item-container">
+                <button onclick="toggleModal('aboutModal')" class="nav-btn uppercase opacity-90 hover:opacity-100">About Me</button>
+                
+                <!-- Modal About Me -->
+                <div id="aboutModal" class="popup-modal rounded-lg border-l-4 border-l-red-600">
+                    <button onclick="closeAllModals()" class="close-btn">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                    <div class="flex items-center space-x-4 pt-2">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Flag_of_Haiti.svg/2560px-Flag_of_Haiti.svg.png" 
+                             alt="Haiti Flag" 
+                             class="w-16 h-10 object-cover shadow-lg border border-white/20">
+                        <div>
+                            <h4 class="font-gamer text-xl text-white">Proudly Haitian</h4>
+                            <p class="text-xs text-red-400 uppercase tracking-widest">Origin & Roots</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENEDOR MUSIC -->
+            <div class="nav-item-container">
+                <button onclick="toggleModal('musicModal')" class="nav-btn uppercase opacity-90 hover:opacity-100">Music</button>
+                
+                <!-- Modal Music -->
+                <div id="musicModal" class="popup-modal rounded-xl border border-red-900/50 bg-black/90 backdrop-blur-xl">
+                    <button onclick="closeAllModals()" class="close-btn">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                    <div class="flex items-center space-x-4 pt-2">
+                        <div class="relative w-20 h-20 flex-shrink-0">
+                            <img src="https://images.genius.com/455571db6a86e17e6af2a030b70ea903.1000x1000x1.png" 
+                                 alt="Album Art" 
+                                 class="w-full h-full object-cover rounded-full border-2 border-red-500/30 disk-spin">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-4 h-4 bg-black rounded-full border border-gray-700"></div>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-[150px]">
+                            <h4 class="font-gamer text-lg text-white truncate">11:11</h4>
+                            <p class="text-xs text-red-400 font-bold uppercase tracking-wider">Roa</p>
+                            
+                            <!-- Fake Progress Bar -->
+                            <div class="mt-3 w-full bg-gray-800 h-1 rounded-full overflow-hidden">
+                                <div class="bg-red-500 h-full w-2/3 relative">
+                                    <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-[0_0_5px_white]"></div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-[10px] text-gray-500 mt-1 font-mono">
+                                <span>2:14</span>
+                                <span>3:20</span>
+                            </div>
+                        </div>
+                        <button class="p-2 text-white hover:text-red-400 transition-colors">
+                            <i data-lucide="play-circle" class="w-8 h-8"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Estatus del Jugador (Derecha) -->
+        <div class="flex items-center space-x-4">
+            <div class="flex flex-col items-end mr-2">
+                <span class="text-[10px] text-red-500 uppercase tracking-widest font-bold">Player Status</span>
+                <div class="h-1.5 w-32 bg-gray-900 rounded-full overflow-hidden border border-red-900/50">
+                    <div class="h-full w-[100%] bg-gradient-to-r from-red-900 to-red-500 shadow-[0_0_10px_red]"></div>
+                </div>
+            </div>
+            <span class="font-gamer text-3xl font-bold italic neon-text-red">LVL 444</span>
+        </div>
+    </nav>
+
+    <!-- Área Principal (Hero) -->
+    <main class="flex-grow relative flex items-center justify-center w-full h-full overflow-hidden perspective-1000">
+        
+        <!-- Elementos decorativos de fondo -->
+        <div class="absolute inset-0 z-0 opacity-20 pointer-events-none">
+            <div class="absolute top-20 left-10 w-32 h-32 border border-red-900/30 rounded-full border-dashed animate-[spin_10s_linear_infinite]"></div>
+            <div class="absolute bottom-20 right-10 w-48 h-48 border border-red-900/20 rotate-45"></div>
+            <div class="absolute top-1/2 right-10 font-gamer text-9xl opacity-5 writing-vertical-lr select-none text-red-600">SYSTEM</div>
+        </div>
+
+        <!-- Texto de Fondo "BEIGE" con Glow Blanco -->
+        <h1 id="bg-text" class="absolute z-10 font-gamer text-[18vw] font-black neon-white-glow select-none leading-none tracking-tighter transition-transform duration-100" 
+            style="opacity: 0.9;">
+            BEIGE
+        </h1>
+
+        <!-- Imagen Central (Ajustada a 65vh) -->
+        <div class="absolute z-20 h-[65vh] w-auto bottom-0 transition-transform duration-100 flex justify-center" id="hero-image-container">
+            <img src="https://xatimg.com/image/DXxVRspu9BnF.png" 
+                 alt="Anime Character" 
+                 class="character-img h-full w-auto object-contain pointer-events-none">
+        </div>
+
+        <!-- Efectos de partículas (Círculos y Textos Beige) -->
+        <div class="absolute z-30 w-full h-full pointer-events-none" id="particles"></div>
+    </main>
+
+    <!-- Sección Inferior (Cajas de Texto) -->
+    <footer class="relative z-30 w-full pb-8 px-4 md:px-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            
+            <!-- Card 1 -->
+            <div class="info-card p-5 flex flex-col justify-between h-auto min-h-[140px] cursor-default group">
+                <div class="text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-2 border-b border-white/10 pb-1">
+                    Even though you're not here and you're there
+                </div>
+                <div class="flex-grow flex items-center">
+                    <h3 class="font-jp text-lg font-bold text-white leading-relaxed text-shadow-sm">
+                        その不完全に完璧な欠点に、俺は夢中なんだ。
+                    </h3>
+                </div>
+                <div class="text-right mt-2">
+                    <p class="text-xs text-red-500 italic">''ヤン・ブロック''</p>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="info-card p-5 flex flex-col justify-between h-auto min-h-[140px] cursor-default group">
+                <div class="text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-2 border-b border-white/10 pb-1">
+                    Immortal beloved
+                </div>
+                <div class="flex-grow flex items-center">
+                    <h3 class="font-jp text-lg font-bold text-white leading-relaxed text-shadow-sm">
+                        永遠に私のもの、永遠に君のもの、永遠に私たち二人のもの。
+                    </h3>
+                </div>
+                <div class="text-right mt-2">
+                    <p class="text-xs text-red-500 italic">'' 不滅の恋人''</p>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="info-card p-5 flex flex-col justify-between h-auto min-h-[140px] cursor-default group">
+                <div class="text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-2 border-b border-white/10 pb-1">
+                    Get over us? That will never happen
+                </div>
+                <div class="flex-grow flex items-center">
+                    <h3 class="font-jp text-lg font-bold text-white leading-relaxed text-shadow-sm">
+                        時は流れるけど認めない、俺たちは完璧なコンビだから
+                    </h3>
+                </div>
+                <div class="text-right mt-2">
+                    <p class="text-xs text-red-500 italic">''ロア''</p>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <script>
+        // Inicializar iconos
+        lucide.createIcons();
+
+        // Lógica de Modales
+        let activeModal = null;
+
+        function toggleModal(modalId) {
+            const modal = document.getElementById(modalId);
+            
+            // Si ya hay uno activo y es diferente, ciérralo
+            if (activeModal && activeModal !== modal) {
+                activeModal.classList.remove('active');
+            }
+
+            // Toggle del actual
+            if (modal.classList.contains('active')) {
+                modal.classList.remove('active');
+                activeModal = null;
+            } else {
+                modal.classList.add('active');
+                activeModal = modal;
+            }
+        }
+        
+        function closeAllModals() {
+            if (activeModal) {
+                activeModal.classList.remove('active');
+                activeModal = null;
+            }
+        }
+
+        document.addEventListener('click', (e) => {
+            if (activeModal && !e.target.closest('.popup-modal') && !e.target.closest('.nav-btn')) {
+                activeModal.classList.remove('active');
+                activeModal = null;
+            }
+        });
+
+        // Efecto Parallax
+        document.addEventListener('mousemove', (e) => {
+            const x = (window.innerWidth - e.pageX * 2) / 100;
+            const y = (window.innerHeight - e.pageY * 2) / 100;
+
+            const bgText = document.getElementById('bg-text');
+            bgText.style.transform = `translate(${x * 1.5}px, ${y * 1.5}px)`;
+
+            const heroImg = document.getElementById('hero-image-container');
+            heroImg.style.transform = `translateX(${-x * 0.5}px)`;
+        });
+
+        // Contenedor de partículas
+        const particlesContainer = document.getElementById('particles');
+        
+        // 1. Partículas normales (Puntos rojos/blancos)
+        function createParticle() {
+            const particle = document.createElement('div');
+            const size = Math.random() * 3;
+            const isRed = Math.random() > 0.7;
+
+            particle.style.position = 'absolute';
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.background = isRed ? '#ff0000' : 'white';
+            particle.style.borderRadius = '50%';
+            particle.style.boxShadow = isRed ? '0 0 5px red' : '0 0 2px white';
+            particle.style.opacity = Math.random() * 0.5 + 0.1;
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.bottom = '-10px';
+            particle.style.animation = `float ${Math.random() * 4 + 3}s linear`;
+            
+            particlesContainer.appendChild(particle);
+
+            setTimeout(() => {
+                particle.remove();
+            }, 6000);
+        }
+
+        // 2. Partículas especiales "BEIGE" laterales
+        function createBeigeFloater() {
+            const el = document.createElement('div');
+            el.innerText = 'BEIGE';
+            el.classList.add('beige-floater');
+            
+            // Decidir lado: Izquierda (0-20%) o Derecha (80-100%)
+            const isLeft = Math.random() > 0.5;
+            if (isLeft) {
+                el.style.left = Math.random() * 20 + 'vw';
+                el.style.transformOrigin = 'left center';
+            } else {
+                el.style.right = Math.random() * 20 + 'vw';
+                el.style.transformOrigin = 'right center';
+            }
+
+            // Altura aleatoria pero evitando el header/footer extremos
+            el.style.top = Math.random() * 60 + 20 + 'vh'; 
+            
+            // Tamaño aleatorio
+            const fontSize = Math.random() * 20 + 14; 
+            el.style.fontSize = fontSize + 'px';
+
+            particlesContainer.appendChild(el);
+            
+            // Eliminar después de la animación
+            setTimeout(() => {
+                el.remove();
+            }, 8000);
+        }
+
+        // Intervalos
+        setInterval(createParticle, 150);
+        setInterval(createBeigeFloater, 2500); // Aparece uno cada 2.5 segundos aprox
+
+    </script>
+</body>
+</html>
