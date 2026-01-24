@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kaori</title>
+    <title>Beige</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,14 +63,12 @@
             opacity: 0.4;
         }
 
-        /* Texto Brillante Neon (Texto Central BEIGE) */
+        /* Texto Brillante Neon Blanco Puro (Solid White) */
         .neon-white-glow {
-            color: white;
+            color: white; 
             text-shadow: 
-                0 0 10px rgba(255, 255, 255, 0.8),
-                0 0 20px rgba(255, 255, 255, 0.6),
-                0 0 40px rgba(255, 255, 255, 0.4),
-                0 0 80px rgba(255, 255, 255, 0.2);
+                0 0 15px rgba(255, 255, 255, 0.8),
+                0 0 30px rgba(255, 255, 255, 0.4);
         }
 
         /* Texto Brillante Neon Rojo (LVL) */
@@ -212,7 +210,7 @@
             color: #ff0000;
         }
 
-        /* Música Spinner */
+        /* Música Spinner y Control */
         @keyframes spin-slow {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
@@ -220,9 +218,16 @@
         .disk-spin {
             animation: spin-slow 8s linear infinite;
         }
+        /* Clase para detener la animación cuando está pausado */
+        .disk-paused {
+            animation-play-state: paused !important;
+        }
     </style>
 </head>
 <body class="selection:bg-red-900 selection:text-white">
+
+    <!-- AUDIO ELEMENT (Oculto) -->
+    <audio id="bg-music" src="musica.mp3" loop></audio>
 
     <!-- Efecto de pantalla -->
     <div class="scanlines"></div>
@@ -265,9 +270,10 @@
                     </button>
                     <div class="flex items-center space-x-4 pt-2">
                         <div class="relative w-20 h-20 flex-shrink-0">
-                            <img src="https://images.genius.com/455571db6a86e17e6af2a030b70ea903.1000x1000x1.png" 
+                            <!-- Agregamos ID al disco para controlar animación -->
+                            <img id="music-disk" src="https://images.genius.com/455571db6a86e17e6af2a030b70ea903.1000x1000x1.png" 
                                  alt="Album Art" 
-                                 class="w-full h-full object-cover rounded-full border-2 border-red-500/30 disk-spin">
+                                 class="w-full h-full object-cover rounded-full border-2 border-red-500/30 disk-spin disk-paused">
                             <div class="absolute inset-0 flex items-center justify-center">
                                 <div class="w-4 h-4 bg-black rounded-full border border-gray-700"></div>
                             </div>
@@ -287,8 +293,9 @@
                                 <span>3:20</span>
                             </div>
                         </div>
-                        <button class="p-2 text-white hover:text-red-400 transition-colors">
-                            <i data-lucide="play-circle" class="w-8 h-8"></i>
+                        <!-- Botón de Reproducción Funcional -->
+                        <button id="player-control-btn" onclick="togglePlayMusic()" class="p-2 text-white hover:text-red-400 transition-colors">
+                            <i id="player-icon" data-lucide="play-circle" class="w-8 h-8"></i>
                         </button>
                     </div>
                 </div>
@@ -318,10 +325,15 @@
             <div class="absolute top-1/2 right-10 font-gamer text-9xl opacity-5 writing-vertical-lr select-none text-red-600">SYSTEM</div>
         </div>
 
-        <!-- Texto de Fondo "BEIGE" con Glow Blanco -->
-        <h1 id="bg-text" class="absolute z-10 font-gamer text-[18vw] font-black neon-white-glow select-none leading-none tracking-tighter transition-transform duration-100" 
-            style="opacity: 0.9;">
-            BEIGE
+        <!-- Texto de Fondo Dividido "BEI - GE" (Blanco Solido) -->
+        <h1 id="bg-text-left" class="absolute z-10 font-gamer text-[18vw] font-black neon-white-glow select-none leading-none tracking-widest transition-transform duration-100" 
+            style="opacity: 0.9; left: 5%; top: 50%; transform: translateY(-50%);">
+            BEI
+        </h1>
+        
+        <h1 id="bg-text-right" class="absolute z-10 font-gamer text-[18vw] font-black neon-white-glow select-none leading-none tracking-widest transition-transform duration-100" 
+            style="opacity: 0.9; right: 5%; top: 50%; transform: translateY(-50%);">
+            GE
         </h1>
 
         <!-- Imagen Central (Ajustada a 65vh) -->
@@ -391,7 +403,66 @@
         // Inicializar iconos
         lucide.createIcons();
 
-        // Lógica de Modales
+        // --- SISTEMA DE AUDIO ---
+        const audio = document.getElementById('bg-music');
+        const playerIcon = document.getElementById('player-icon');
+        const musicDisk = document.getElementById('music-disk');
+        let musicStarted = false;
+
+        // Función para actualizar la UI del reproductor
+        function updatePlayerUI(isPlaying) {
+            if (isPlaying) {
+                // Cambiar icono a Pausa
+                playerIcon.setAttribute('data-lucide', 'pause-circle');
+                // Girar el disco
+                musicDisk.classList.remove('disk-paused');
+            } else {
+                // Cambiar icono a Play
+                playerIcon.setAttribute('data-lucide', 'play-circle');
+                // Detener el disco
+                musicDisk.classList.add('disk-paused');
+            }
+            lucide.createIcons(); // Refrescar iconos
+        }
+
+        // Función controlada por el botón del modal
+        function togglePlayMusic() {
+            if (audio.paused) {
+                audio.play()
+                    .then(() => {
+                        updatePlayerUI(true);
+                        musicStarted = true;
+                    })
+                    .catch(err => console.log("Error al reproducir:", err));
+            } else {
+                audio.pause();
+                updatePlayerUI(false);
+            }
+        }
+
+        // --- AUTO-PLAY EN PRIMERA INTERACCIÓN ---
+        function initAudioOnInteraction() {
+            if (!musicStarted) {
+                audio.play().then(() => {
+                    musicStarted = true;
+                    updatePlayerUI(true); // Actualizar UI
+                    // Remover listeners para que no se ejecute de nuevo innecesariamente
+                    document.removeEventListener('click', initAudioOnInteraction);
+                    document.removeEventListener('mousemove', initAudioOnInteraction);
+                    document.removeEventListener('keydown', initAudioOnInteraction);
+                }).catch(error => {
+                    console.log("Esperando interacción del usuario para reproducir audio...");
+                });
+            }
+        }
+
+        // Escuchar cualquier interacción inicial
+        document.addEventListener('click', initAudioOnInteraction);
+        document.addEventListener('mousemove', initAudioOnInteraction);
+        document.addEventListener('keydown', initAudioOnInteraction);
+
+
+        // --- LÓGICA DE MODALES ---
         let activeModal = null;
 
         function toggleModal(modalId) {
@@ -426,13 +497,16 @@
             }
         });
 
-        // Efecto Parallax
+        // Efecto Parallax (Ajustado para texto dividido)
         document.addEventListener('mousemove', (e) => {
             const x = (window.innerWidth - e.pageX * 2) / 100;
             const y = (window.innerHeight - e.pageY * 2) / 100;
 
-            const bgText = document.getElementById('bg-text');
-            bgText.style.transform = `translate(${x * 1.5}px, ${y * 1.5}px)`;
+            const bgTextLeft = document.getElementById('bg-text-left');
+            const bgTextRight = document.getElementById('bg-text-right');
+            
+            if(bgTextLeft) bgTextLeft.style.transform = `translate(${x * 1.5}px, calc(-50% + ${y * 1.5}px))`;
+            if(bgTextRight) bgTextRight.style.transform = `translate(${x * 1.5}px, calc(-50% + ${y * 1.5}px))`;
 
             const heroImg = document.getElementById('hero-image-container');
             heroImg.style.transform = `translateX(${-x * 0.5}px)`;
@@ -441,7 +515,7 @@
         // Contenedor de partículas
         const particlesContainer = document.getElementById('particles');
         
-        // 1. Partículas normales (Puntos rojos/blancos)
+        // 1. Partículas normales
         function createParticle() {
             const particle = document.createElement('div');
             const size = Math.random() * 3;
@@ -465,13 +539,12 @@
             }, 6000);
         }
 
-        // 2. Partículas especiales "BEIGE" laterales
+        // 2. Partículas BEIGE
         function createBeigeFloater() {
             const el = document.createElement('div');
             el.innerText = 'BEIGE';
             el.classList.add('beige-floater');
             
-            // Decidir lado: Izquierda (0-20%) o Derecha (80-100%)
             const isLeft = Math.random() > 0.5;
             if (isLeft) {
                 el.style.left = Math.random() * 20 + 'vw';
@@ -481,24 +554,16 @@
                 el.style.transformOrigin = 'right center';
             }
 
-            // Altura aleatoria pero evitando el header/footer extremos
             el.style.top = Math.random() * 60 + 20 + 'vh'; 
-            
-            // Tamaño aleatorio
             const fontSize = Math.random() * 20 + 14; 
             el.style.fontSize = fontSize + 'px';
 
             particlesContainer.appendChild(el);
-            
-            // Eliminar después de la animación
-            setTimeout(() => {
-                el.remove();
-            }, 8000);
+            setTimeout(() => { el.remove(); }, 8000);
         }
 
-        // Intervalos
         setInterval(createParticle, 150);
-        setInterval(createBeigeFloater, 2500); // Aparece uno cada 2.5 segundos aprox
+        setInterval(createBeigeFloater, 2500);
 
     </script>
 </body>
