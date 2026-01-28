@@ -19,7 +19,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* Prevención de selección de texto */
             user-select: none;
             -webkit-user-select: none;
         }
@@ -29,8 +28,7 @@
             text-shadow: 
                 0 0 5px #ff0000,
                 0 0 10px #ff0000,
-                0 0 20px #ff4d00,
-                0 0 40px #ff0000;
+                0 0 20px #ff4d00;
             animation: flicker 2.5s infinite alternate;
         }
 
@@ -77,11 +75,11 @@
 
         /* Glassmorphism Panel with requested Background Image */
         .glass-panel {
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
                         url('https://i.pinimg.com/1200x/69/51/df/6951dfc299ecc304db62cb44adb46545.jpg');
             background-size: cover;
             background-position: center;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
         }
@@ -99,136 +97,133 @@
         /* Music Player Auto-Minimize Styles */
         #musicPlayer {
             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            max-width: 280px;
         }
         #musicPlayer.minimized {
-            max-width: 68px;
-            padding: 8px;
+            width: 60px !important;
+            height: 60px !important;
+            padding: 4px;
             border-radius: 50%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             border-color: rgba(255, 0, 0, 0.5);
             cursor: pointer;
+            overflow: hidden;
         }
         #musicPlayer.minimized .player-content {
-            opacity: 0;
-            pointer-events: none;
-            width: 0;
-            overflow: hidden;
+            display: none;
         }
         .player-content {
             transition: opacity 0.3s ease;
         }
 
-        /* Scrollbar hide */
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* Bloqueo de puntero en imágenes para evitar arrastre */
+        /* Bloqueo de puntero en imágenes */
         img {
             -webkit-user-drag: none;
-            -khtml-user-drag: none;
-            -moz-user-drag: none;
-            -o-user-drag: none;
+            pointer-events: none;
+        }
+
+        /* Custom scrollbar para el contenedor móvil si el contenido excede la pantalla */
+        .main-container::-webkit-scrollbar {
+            width: 4px;
+        }
+        .main-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 0, 0, 0.3);
+            border-radius: 10px;
         }
     </style>
 </head>
-<body class="p-2 lg:p-4 relative">
+<body class="p-2 md:p-4 relative">
 
     <!-- Background Decoration -->
     <div class="absolute inset-0 pointer-events-none overflow-hidden">
         <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-        <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-red-900 rounded-full mix-blend-screen filter blur-[150px] opacity-30"></div>
-        <div class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-orange-900 rounded-full mix-blend-screen filter blur-[150px] opacity-20"></div>
+        <div class="absolute top-1/4 left-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-red-900 rounded-full mix-blend-screen filter blur-[100px] md:blur-[150px] opacity-30"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-orange-900 rounded-full mix-blend-screen filter blur-[100px] md:blur-[150px] opacity-20"></div>
     </div>
 
     <!-- Main Container -->
-    <main class="relative w-full max-w-7xl h-[95vh] lg:h-[90vh] glass-panel rounded-3xl p-4 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-4 overflow-hidden border-t border-white/5 shadow-2xl">
+    <main class="main-container relative w-full max-w-7xl h-[95vh] md:h-[90vh] glass-panel rounded-3xl p-4 md:p-8 flex flex-col lg:grid lg:grid-cols-12 gap-4 overflow-y-auto lg:overflow-hidden border-t border-white/5 shadow-2xl">
         
-        <!-- Left: Stats -->
-        <div class="lg:col-span-3 flex flex-col h-full z-20 order-2 lg:order-1 relative justify-between">
+        <!-- Left Column: Stats (Order 2 on Mobile, 1 on Desktop) -->
+        <div class="lg:col-span-3 flex flex-col h-auto lg:h-full z-20 order-2 lg:order-1 justify-between gap-6">
             
-            <div class="flex flex-col gap-4 lg:gap-6 justify-center mt-2 lg:mt-0 jp-text flex-1 hide-scrollbar overflow-y-auto lg:overflow-visible pr-2">
+            <div class="flex flex-col gap-4 md:gap-6 justify-center jp-text">
                 <div class="group">
-                    <h3 class="text-red-500 text-[10px] lg:text-xs tracking-widest uppercase mb-0.5 opacity-80">Name</h3>
-                    <h1 class="text-2xl lg:text-3xl font-bold text-white group-hover:text-red-400 transition-colors">両面宿儺</h1>
-                    <p class="text-[10px] text-gray-400 tracking-widest">RYŌMEN SUKUNA</p>
+                    <h3 class="text-red-500 text-[10px] md:text-xs tracking-widest uppercase mb-0.5 opacity-80">Name</h3>
+                    <h1 class="text-xl md:text-3xl font-bold text-white group-hover:text-red-400 transition-colors">両面宿儺</h1>
+                    <p class="text-[9px] md:text-[10px] text-gray-400 tracking-widest">RYŌMEN SUKUNA</p>
                 </div>
                 
-                <div class="h-px w-16 bg-gradient-to-r from-red-600 to-transparent my-1"></div>
+                <div class="h-px w-12 md:w-16 bg-gradient-to-r from-red-600 to-transparent"></div>
 
                 <div class="group">
-                    <h3 class="text-red-500 text-[10px] lg:text-xs tracking-widest uppercase mb-0.5 opacity-80">Technique</h3>
+                    <h3 class="text-red-500 text-[10px] md:text-xs tracking-widest uppercase mb-0.5 opacity-80">Technique</h3>
                     <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-skull text-red-600 text-sm"></i>
-                        <h2 class="text-lg lg:text-xl font-medium">御厨子 <span class="text-[10px] lg:text-xs text-gray-400 font-light">(Shrine)</span></h2>
+                        <i class="fa-solid fa-skull text-red-600 text-xs md:text-sm"></i>
+                        <h2 class="text-base md:text-xl font-medium">御厨子 <span class="text-[10px] text-gray-400 font-light">(Shrine)</span></h2>
                     </div>
                 </div>
 
                 <div class="group">
-                    <h3 class="text-red-500 text-[10px] lg:text-xs tracking-widest uppercase mb-0.5 opacity-80">Affiliation</h3>
-                    <h2 class="text-lg lg:text-xl font-medium">呪いの王</h2>
-                    <p class="text-[10px] text-gray-400">King of Curses / Heian Era</p>
+                    <h3 class="text-red-500 text-[10px] md:text-xs tracking-widest uppercase mb-0.5 opacity-80">Affiliation</h3>
+                    <h2 class="text-base md:text-xl font-medium">呪いの王</h2>
+                    <p class="text-[9px] md:text-[10px] text-gray-400 uppercase tracking-tighter">King of Curses / Heian Era</p>
                 </div>
 
                 <div class="group">
-                    <h3 class="text-red-500 text-[10px] lg:text-xs tracking-widest uppercase mb-0.5 opacity-80">Artifacts</h3>
-                    <h2 class="text-lg lg:text-xl font-medium">神武解</h2>
-                    <p class="text-[10px] text-gray-400">Kamutoke & Hiten</p>
+                    <h3 class="text-red-500 text-[10px] md:text-xs tracking-widest uppercase mb-0.5 opacity-80">Artifacts</h3>
+                    <h2 class="text-base md:text-xl font-medium">神武解</h2>
+                    <p class="text-[9px] md:text-[10px] text-gray-400">Kamutoke & Hiten</p>
                 </div>
             </div>
 
-            <!-- Bottom Left Images -->
-            <div class="flex gap-4 z-30 mt-4 flex-shrink-0 pt-4 border-t border-white/10 lg:border-none">
-                <div class="relative w-20 h-20 lg:w-32 lg:h-32 rounded-lg overflow-hidden corner-img shadow-xl shadow-red-900/40">
+            <!-- Bottom Left Images (Smaller on Mobile) -->
+            <div class="flex gap-3 md:gap-4 z-30 mt-auto pt-4 lg:pt-0 border-t border-white/10 lg:border-none">
+                <div class="relative w-16 h-16 md:w-24 lg:w-32 md:h-24 lg:h-32 rounded-lg overflow-hidden corner-img shadow-xl shadow-red-900/40">
                     <img src="https://i.pinimg.com/1200x/95/6e/7c/956e7ca2076f3d24ffd1c20ef58e8a74.jpg" alt="Sukuna Detail 1" class="w-full h-full object-cover">
                 </div>
-                <div class="relative w-20 h-20 lg:w-32 lg:h-32 rounded-lg overflow-hidden corner-img shadow-xl shadow-red-900/40">
+                <div class="relative w-16 h-16 md:w-24 lg:w-32 md:h-24 lg:h-32 rounded-lg overflow-hidden corner-img shadow-xl shadow-red-900/40">
                     <img src="https://i.pinimg.com/736x/6c/9c/45/6c9c45fecc13694f0639f6fb798cb201.jpg" alt="Sukuna Detail 2" class="w-full h-full object-cover">
                 </div>
             </div>
         </div>
 
-        <!-- Center: Main Image -->
-        <div class="lg:col-span-6 relative flex justify-center items-end z-10 order-1 lg:order-2 h-full min-h-0">
-            <div class="absolute top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] aspect-square border border-red-600/20 rounded-full rotate-12 pointer-events-none"></div>
-            <div class="absolute top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80%] aspect-square border-4 border-double border-red-900/10 rounded-full -rotate-45 pointer-events-none"></div>
+        <!-- Center Column: Character Image (Order 1 on Mobile, 2 on Desktop) -->
+        <div class="lg:col-span-6 relative flex justify-center items-center lg:items-end z-10 order-1 lg:order-2 h-[40vh] md:h-[50vh] lg:h-full">
+            <!-- Decorative Rings -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] md:w-[80%] aspect-square border border-red-600/10 rounded-full rotate-12 pointer-events-none"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] md:w-[70%] aspect-square border-2 border-red-900/5 rounded-full -rotate-45 pointer-events-none"></div>
 
             <img src="https://xatimg.com/image/Insz2vOoim1j.png" 
                  alt="Ryomen Sukuna" 
-                 class="h-auto max-h-[90%] w-auto object-contain animate-float drop-shadow-[0_0_35px_rgba(255,0,0,0.4)] brightness-110 relative z-10">
+                 class="h-full w-auto object-contain animate-float drop-shadow-[0_0_25px_rgba(255,0,0,0.3)] brightness-110 relative z-10">
                  
-            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full h-32 bg-gradient-to-t from-black via-transparent to-transparent opacity-60 z-0"></div>
+            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-20 bg-gradient-to-t from-black/50 to-transparent z-0 lg:hidden"></div>
         </div>
 
-        <!-- Right: Vertical Text & Player -->
-        <div class="lg:col-span-3 flex flex-col items-center lg:items-end h-full z-20 order-3 relative justify-between">
+        <!-- Right Column: Vertical Text & Music (Order 3) -->
+        <div class="lg:col-span-3 flex flex-col items-center lg:items-end h-auto lg:h-full z-20 order-3 justify-between gap-8">
             
-            <div class="absolute right-[50%] lg:right-[35%] top-0 bottom-0 h-[80%] my-auto flex gap-2 opacity-40 pointer-events-none">
+            <!-- Lines (Hidden on Mobile) -->
+            <div class="hidden lg:flex absolute right-[35%] top-0 bottom-0 h-[80%] my-auto gap-2 opacity-30 pointer-events-none">
                 <div class="w-[1px] h-full bg-red-600"></div>
                 <div class="w-[4px] h-full bg-red-800 shadow-[0_0_15px_rgba(153,27,27,1)]"></div>
                 <div class="w-[1px] h-full bg-red-600"></div>
             </div>
 
-            <div class="flex flex-col items-center justify-center flex-1 gap-1 mr-0 lg:mr-10 relative z-10 min-h-0">
-                <div class="text-5xl lg:text-7xl font-black text-red-100 neon-text flex flex-col leading-none tracking-tighter">
-                    <span>F</span>
-                    <span>R</span>
-                    <span>E</span>
-                    <span>A</span>
-                    <span>K</span>
+            <!-- Vertical Name (Responsive sizing) -->
+            <div class="flex flex-row lg:flex-col items-center justify-center flex-1 gap-2 lg:gap-1 lg:mr-10 relative z-10">
+                <div class="text-4xl md:text-5xl lg:text-7xl font-black text-red-100 neon-text flex flex-row lg:flex-col leading-none tracking-tighter">
+                    <span>F</span><span>R</span><span>E</span><span>A</span><span>K</span>
                 </div>
             </div>
 
             <!-- Music Player con Auto-Minimize -->
-            <div id="musicPlayer" class="w-full flex-shrink-0 mt-4 glass-panel rounded-xl p-3 flex flex-col gap-2 border border-red-900/50 shadow-2xl z-40 bg-black/80">
+            <div id="musicPlayer" class="w-full max-w-[280px] flex-shrink-0 lg:mt-4 glass-panel rounded-2xl p-3 flex flex-col gap-2 border border-red-900/40 shadow-2xl z-40 bg-black/90">
                 <div class="flex items-center gap-3">
-                    <!-- Album Art Circle -->
-                    <div id="discTrigger" class="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border border-red-600/50 shadow-[0_0_10px_rgba(255,0,0,0.3)]">
-                        <img src="https://i.pinimg.com/736x/0b/a5/ce/0ba5ce7d660419ab632cf31cc08a9bd9.jpg" class="w-full h-full object-cover animate-[spin_10s_linear_infinite]" alt="Sukuna OST">
+                    <div id="discTrigger" class="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border border-red-600/40">
+                        <img src="https://i.pinimg.com/736x/0b/a5/ce/0ba5ce7d660419ab632cf31cc08a9bd9.jpg" class="w-full h-full object-cover animate-[spin_10s_linear_infinite]" alt="Sukuna Suite" style="pointer-events: auto;">
                     </div>
                     
-                    <!-- Text Info (Hides when minimized) -->
                     <div class="flex-1 overflow-hidden player-content">
                         <div class="marquee w-full">
                             <p class="text-[10px] font-bold text-red-100 tracking-wider">Jujutsu Kaisen OST - Sukuna Suite</p>
@@ -241,93 +236,69 @@
                     </div>
                 </div>
                 
-                <!-- Controls (Hides when minimized) -->
                 <div class="flex flex-col gap-1.5 player-content">
                     <div class="w-full bg-neutral-800 h-1 rounded-full overflow-hidden">
-                        <div class="bg-gradient-to-r from-red-600 to-red-900 w-[75%] h-full rounded-full"></div>
+                        <div id="progressBar" class="bg-gradient-to-r from-red-600 to-red-900 w-[75%] h-full rounded-full transition-all duration-1000"></div>
                     </div>
-                    <div class="flex justify-between items-center text-red-200 text-[10px] px-1">
+                    <div class="flex justify-between items-center text-red-200 text-[9px] px-1 font-sans">
                         <span>2:45</span>
-                        <div class="flex gap-4 text-sm">
+                        <div class="flex gap-4 text-xs">
                             <i class="fa-solid fa-backward hover:text-white cursor-pointer transition"></i>
-                            <i id="playPause" class="fa-solid fa-pause hover:text-white cursor-pointer transition"></i>
+                            <i id="playPause" class="fa-solid fa-pause hover:text-white cursor-pointer transition" style="pointer-events: auto;"></i>
                             <i class="fa-solid fa-forward hover:text-white cursor-pointer transition"></i>
                         </div>
                         <span>5:12</span>
                     </div>
                 </div>
             </div>
-
         </div>
 
         <!-- Decorative Faint Kanji Background -->
-        <div class="absolute bottom-4 left-4 text-[12rem] lg:text-[18rem] font-bold text-red-600 opacity-[0.05] select-none pointer-events-none jp-text z-0 leading-none">
+        <div class="absolute bottom-4 left-4 text-[10rem] md:text-[18rem] font-bold text-red-600 opacity-[0.04] select-none pointer-events-none jp-text z-0 leading-none">
             呪
         </div>
     </main>
 
     <script>
         // --- PROTECCIÓN DE CONTENIDO ---
-        
-        // Deshabilitar clic derecho
         document.addEventListener('contextmenu', event => event.preventDefault());
-
-        // Deshabilitar arrastre de imágenes
-        document.addEventListener('dragstart', event => {
-            if (event.target.tagName === 'IMG') event.preventDefault();
-        });
-
-        // Deshabilitar atajos de teclado (F12, Ctrl+U, Ctrl+Shift+I, etc.)
+        document.addEventListener('dragstart', event => event.preventDefault());
         document.addEventListener('keydown', event => {
-            // F12
-            if (event.keyCode === 123) event.preventDefault();
-            
-            // Ctrl+U o Cmd+U (Ver código fuente)
-            if ((event.ctrlKey || event.metaKey) && event.keyCode === 85) event.preventDefault();
-            
-            // Ctrl+Shift+I o Cmd+Option+I (Inspeccionar)
-            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.keyCode === 73) event.preventDefault();
-
-            // Ctrl+S o Cmd+S (Guardar)
-            if ((event.ctrlKey || event.metaKey) && event.keyCode === 83) event.preventDefault();
-            
-            // Ctrl+Shift+J (Consola)
-            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.keyCode === 74) event.preventDefault();
+            if (event.keyCode === 123 || 
+                ((event.ctrlKey || event.metaKey) && (event.keyCode === 85 || (event.shiftKey && (event.keyCode === 73 || event.keyCode === 74)) || event.keyCode === 83))) {
+                event.preventDefault();
+            }
         });
-
 
         // --- LÓGICA DEL REPRODUCTOR ---
-
         const musicPlayer = document.getElementById('musicPlayer');
         const playBtn = document.getElementById('playPause');
-        const discTrigger = document.getElementById('discTrigger');
+        const discImg = document.querySelector('.animate-\\[spin_10s_linear_infinite\\]');
         let isPlaying = true;
         let minimizeTimeout;
 
-        // Función para minimizar
         const startMinimizeTimer = () => {
             clearTimeout(minimizeTimeout);
             minimizeTimeout = setTimeout(() => {
-                musicPlayer.classList.add('minimized');
+                if (!musicPlayer.matches(':hover')) {
+                    musicPlayer.classList.add('minimized');
+                }
             }, 5000);
         };
 
-        // Iniciar temporizador al cargar
         startMinimizeTimer();
 
-        // Expandir al pasar el mouse o hacer click en el disco
+        // Interacción para expandir/minimizar
         musicPlayer.addEventListener('mouseenter', () => {
             musicPlayer.classList.remove('minimized');
             clearTimeout(minimizeTimeout);
         });
 
         musicPlayer.addEventListener('mouseleave', () => {
-            if (!musicPlayer.classList.contains('minimized')) {
-                startMinimizeTimer();
-            }
+            startMinimizeTimer();
         });
 
-        // Click para expandir en móvil si está minimizado
+        // Soporte para expansión por click/touch si está minimizado
         musicPlayer.addEventListener('click', () => {
             if (musicPlayer.classList.contains('minimized')) {
                 musicPlayer.classList.remove('minimized');
@@ -335,19 +306,25 @@
             }
         });
 
-        // Lógica Play/Pause
         if(playBtn) {
             playBtn.addEventListener('click', (e) => {
                 e.stopPropagation(); 
                 isPlaying = !isPlaying;
                 playBtn.className = isPlaying ? 'fa-solid fa-pause hover:text-white cursor-pointer transition' : 'fa-solid fa-play hover:text-white cursor-pointer transition';
-                
-                const albumArt = document.querySelector('.animate-\\[spin_10s_linear_infinite\\]');
-                if (albumArt) {
-                    albumArt.style.animationPlayState = isPlaying ? 'running' : 'paused';
-                }
+                if (discImg) discImg.style.animationPlayState = isPlaying ? 'running' : 'paused';
             });
         }
+
+        // Simulación de progreso
+        const progressBar = document.getElementById('progressBar');
+        setInterval(() => {
+            if(isPlaying) {
+                let currentWidth = parseFloat(progressBar.style.width) || 75;
+                if(currentWidth < 100) {
+                    progressBar.style.width = (currentWidth + 0.1) + '%';
+                }
+            }
+        }, 1000);
     </script>
 </body>
 </html>
