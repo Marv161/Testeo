@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sukuna </title>
+    <title>Sukuna</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Noto+Sans+JP:wght@300;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -19,6 +19,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            /* Prevención de selección de texto */
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         /* Neon Text Animation - Red Variation */
@@ -119,6 +122,14 @@
         /* Scrollbar hide */
         .hide-scrollbar::-webkit-scrollbar {
             display: none;
+        }
+
+        /* Bloqueo de puntero en imágenes para evitar arrastre */
+        img {
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
         }
     </style>
 </head>
@@ -256,6 +267,37 @@
     </main>
 
     <script>
+        // --- PROTECCIÓN DE CONTENIDO ---
+        
+        // Deshabilitar clic derecho
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // Deshabilitar arrastre de imágenes
+        document.addEventListener('dragstart', event => {
+            if (event.target.tagName === 'IMG') event.preventDefault();
+        });
+
+        // Deshabilitar atajos de teclado (F12, Ctrl+U, Ctrl+Shift+I, etc.)
+        document.addEventListener('keydown', event => {
+            // F12
+            if (event.keyCode === 123) event.preventDefault();
+            
+            // Ctrl+U o Cmd+U (Ver código fuente)
+            if ((event.ctrlKey || event.metaKey) && event.keyCode === 85) event.preventDefault();
+            
+            // Ctrl+Shift+I o Cmd+Option+I (Inspeccionar)
+            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.keyCode === 73) event.preventDefault();
+
+            // Ctrl+S o Cmd+S (Guardar)
+            if ((event.ctrlKey || event.metaKey) && event.keyCode === 83) event.preventDefault();
+            
+            // Ctrl+Shift+J (Consola)
+            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.keyCode === 74) event.preventDefault();
+        });
+
+
+        // --- LÓGICA DEL REPRODUCTOR ---
+
         const musicPlayer = document.getElementById('musicPlayer');
         const playBtn = document.getElementById('playPause');
         const discTrigger = document.getElementById('discTrigger');
@@ -296,7 +338,7 @@
         // Lógica Play/Pause
         if(playBtn) {
             playBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); // Evitar que el click minimice/expand mientas se pulsa pausa
+                e.stopPropagation(); 
                 isPlaying = !isPlaying;
                 playBtn.className = isPlaying ? 'fa-solid fa-pause hover:text-white cursor-pointer transition' : 'fa-solid fa-play hover:text-white cursor-pointer transition';
                 
