@@ -3,364 +3,309 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sukuna</title>
+    <title>Sukuna </title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Noto+Sans+JP:wght@900&family=Creepster&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Noto+Sans+JP:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Custom Styles */
         body {
+            font-family: 'Cinzel', serif;
             background-color: #0a0a0a;
-            font-family: 'Oswald', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            overflow: hidden; /* Prevent scrolling outside device */
-        }
-
-        /* Mobile Container - Landscape Mode */
-        .mobile-frame {
-            width: 100%;
-            max-width: 850px;
-            height: 480px;
-            background: linear-gradient(180deg, #121212 0%, #000000 100%);
-            border-radius: 40px;
-            box-shadow: 0 0 60px rgba(180, 0, 0, 0.15);
-            position: relative;
+            background-image: radial-gradient(circle at 50% 50%, #2e0b0b 0%, #000000 100%);
+            color: white;
+            height: 100vh;
+            width: 100vw;
             overflow: hidden;
             display: flex;
-            flex-direction: column;
-            border: 8px solid #2a2a2a;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* Background Text - Horizontal */
-        .bg-text {
-            position: absolute;
-            top: 50%;
-            left: 5%; 
-            transform: translateY(-50%);
-            font-family: 'Noto Sans JP', sans-serif;
-            font-size: 8rem;
-            color: rgba(255, 255, 255, 0.03);
-            white-space: nowrap;
-            z-index: 0;
-            pointer-events: none;
-            letter-spacing: -10px;
-            line-height: 1;
+        /* Neon Text Animation - Red Variation */
+        .neon-text {
+            text-shadow: 
+                0 0 5px #ff0000,
+                0 0 10px #ff0000,
+                0 0 20px #ff4d00,
+                0 0 40px #ff0000;
+            animation: flicker 2.5s infinite alternate;
         }
 
-        /* Main Character Image - Stuck to border */
-        .main-char-container {
-            position: absolute;
-            bottom: 0;
-            left: -20px; /* Slight offset to ensure it hits edge */
-            height: 100%;
-            width: 50%;
-            z-index: 10;
-            pointer-events: none;
-            display: flex;
-            align-items: flex-end;
-        }
-        
-        .main-char {
-            height: 105%; /* Slightly larger to cover bottom rounding */
-            width: auto;
-            object-fit: contain;
-            object-position: bottom left;
-            filter: drop-shadow(10px 0 20px rgba(0,0,0,0.8));
-        }
-
-        /* Sukuna Text Effect */
-        .sukuna-text {
-            font-family: 'Creepster', cursive;
-            background: linear-gradient(90deg, #ff0000, #330000, #ff0000);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: bloodFlow 3s linear infinite;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
-            letter-spacing: 2px;
-        }
-
-        @keyframes bloodFlow {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 200% 50%; }
-        }
-
-        /* Glassmorphism */
-        .glass-panel {
-            background: rgba(20, 20, 20, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Popup Overlays */
-        .overlay-panel {
-            position: absolute;
-            z-index: 50;
-            background: rgba(10, 10, 10, 0.95);
-            border: 1px solid #330000;
-            backdrop-filter: blur(20px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            opacity: 0;
-            visibility: hidden;
-            transform: scale(0.95);
-        }
-
-        .overlay-panel.active {
-            opacity: 1;
-            visibility: visible;
-            transform: scale(1);
-        }
-
-        /* Specific Overlay Positions */
-        #overlay-about { top: 70px; left: 40px; width: 300px; }
-        #overlay-gallery { top: 70px; left: 160px; width: 320px; }
-        #overlay-friends { top: 0; right: 0; height: 100%; width: 200px; border-radius: 0 32px 32px 0; border-left: 2px solid #300; }
-
-        /* Battery Icon */
-        .battery-icon {
-            width: 20px;
-            height: 10px;
-            border: 1px solid #666;
-            border-radius: 2px;
-            position: relative;
-            display: inline-block;
-            margin-right: 2px;
-        }
-        .battery-icon::after {
-            content: '';
-            position: absolute;
-            right: -3px;
-            top: 2px;
-            width: 2px;
-            height: 4px;
-            background: #666;
-            border-radius: 0 1px 1px 0;
-        }
-        .battery-level {
-            height: 100%;
-            background: #fff;
-            width: 100%; /* 100% charged */
-        }
-        
-        /* Hide scrollbar */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-    </style>
-</head>
-<body class="text-white selection:bg-red-900 selection:text-white">
-
-    <div class="mobile-frame relative" id="main-frame">
-        
-        <!-- Header / Nav -->
-        <nav class="flex justify-between items-center px-8 pt-6 pb-2 z-40 w-full glass-panel absolute top-0 rounded-t-[32px]">
-            <div class="text-2xl sukuna-text font-bold tracking-widest relative z-50">SUKUNA</div>
-            <div class="flex gap-6 z-50">
-                <button onclick="toggleOverlay('overlay-about')" class="text-xs font-bold hover:text-red-500 transition-colors tracking-wide uppercase">Sobre mí</button>
-                <button onclick="toggleOverlay('overlay-gallery')" class="text-xs font-bold hover:text-red-500 transition-colors tracking-wide uppercase">Galería</button>
-                <button onclick="toggleOverlay('overlay-friends')" class="text-xs font-bold hover:text-red-500 transition-colors tracking-wide uppercase">Amigos</button>
-            </div>
-        </nav>
-
-        <!-- Background Japanese Text (Horizontal) -->
-        <div class="bg-text">呪術廻戦</div>
-
-        <!-- Main Character (Stuck to border) -->
-        <div class="main-char-container">
-            <img src="https://xatimg.com/image/WHkU3li15CCh.png" alt="Ryomen Sukuna" class="main-char">
-        </div>
-
-        <!-- Main Content Area - Horizontal Layout -->
-        <main class="flex-1 flex flex-row items-center pt-16 relative w-full h-full overflow-hidden pb-4 px-8 gap-6 justify-end">
-            
-            <!-- RIGHT COLUMN: Widgets & Video -->
-            <div class="w-7/12 flex flex-col gap-3 z-20 h-full justify-center pl-10">
-                
-                <!-- Info Cards Grid -->
-                <div class="grid grid-cols-2 gap-3">
-                    <!-- Date Card -->
-                    <div class="glass-panel p-3 rounded-lg flex flex-col justify-center items-center h-20 border-l-2 border-red-800 bg-gradient-to-r from-red-900/20 to-transparent">
-                        <div class="text-lg font-bold leading-none font-[Oswald] text-center" id="date-display"></div>
-                    </div>
-
-                    <!-- Profile Card -->
-                    <div class="glass-panel p-2 rounded-lg flex items-center gap-3 h-20 border-r-2 border-red-800 bg-gradient-to-l from-red-900/20 to-transparent">
-                        <div class="relative w-10 h-10 flex-shrink-0">
-                            <img src="https://i.pinimg.com/736x/e8/c8/80/e8c880f1deb4c6727ed06ecdaa4341a7.jpg" 
-                                 class="w-full h-full rounded-full object-cover border border-red-500/50" 
-                                 alt="Profile">
-                            <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-red-600 rounded-full border-2 border-[#1a1a1a]"></div>
-                        </div>
-                        <div class="flex flex-col overflow-hidden">
-                            <span class="text-[9px] text-gray-400 uppercase">King of Curses</span>
-                            <span class="text-xs font-bold truncate text-red-100">Ryomen Sukuna</span>
-                            <span class="text-[8px] text-red-400">Special Grade</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Video Section -->
-                <div class="glass-panel rounded-lg overflow-hidden p-1 flex-1 max-h-[160px] flex flex-col relative group">
-                    <div class="flex justify-between items-center px-2 py-1">
-                        <span class="text-[9px] font-bold tracking-wider flex items-center gap-2 text-gray-400">
-                            CONTINUE
-                        </span>
-                    </div>
-                    <div class="relative w-full h-full rounded bg-black flex-1 overflow-hidden">
-                        <!-- GIF Replacement -->
-                        <img 
-                            src="https://i.pinimg.com/originals/c3/e1/e4/c3e1e47113a4bea928309e341b245dac.gif" 
-                            class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300" 
-                            alt="Sukuna Visual"
-                        >
-                    </div>
-                </div>
-
-                <!-- Bottom Stats -->
-                <div class="flex justify-between text-gray-500 text-[9px] tracking-widest items-center">
-                    <div class="flex items-center gap-2">
-                        <div class="battery-icon"><div class="battery-level"></div></div>
-                        <span>BATTERY: 100%</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Flag_of_Japan.svg/1280px-Flag_of_Japan.svg.png" class="w-3 h-3 rounded-full object-cover">
-                        <span>LOCATION: JAPAN</span>
-                    </div>
-                </div>
-
-            </div>
-
-        </main>
-
-        <!-- OVERLAYS -->
-
-        <!-- 1. Sobre Mí -->
-        <div id="overlay-about" class="overlay-panel rounded-xl p-4 text-white">
-            <h3 class="text-red-500 font-bold text-sm mb-2 border-b border-red-900 pb-1">SOBRE MÍ</h3>
-            <p class="text-[10px] leading-relaxed text-gray-300">
-                Encarnado hace mil años. Rey de las Maldiciones. Actualmente ocupando un recipiente humano. 
-                <br><br>
-                <span class="text-red-400">Gustos:</span> Comer, caos.<br>
-                <span class="text-red-400">Disgustos:</span> Hechiceros débiles.
-            </p>
-            <button onclick="closeAllOverlays()" class="absolute top-2 right-2 text-gray-500 hover:text-white">×</button>
-        </div>
-
-        <!-- 2. Galería -->
-        <div id="overlay-gallery" class="overlay-panel rounded-xl p-3">
-            <h3 class="text-red-500 font-bold text-sm mb-2 border-b border-red-900 pb-1">GALERÍA</h3>
-            <div class="grid grid-cols-3 gap-2">
-                <div class="aspect-square bg-gray-800 rounded border border-gray-700 hover:border-red-500 transition-colors"></div>
-                <div class="aspect-square bg-gray-800 rounded border border-gray-700 hover:border-red-500 transition-colors"></div>
-                <div class="aspect-square bg-gray-800 rounded border border-gray-700 hover:border-red-500 transition-colors"></div>
-                <div class="aspect-square bg-gray-800 rounded border border-gray-700 hover:border-red-500 transition-colors"></div>
-                <div class="aspect-square bg-gray-800 rounded border border-gray-700 hover:border-red-500 transition-colors"></div>
-                <div class="aspect-square bg-gray-800 rounded border border-gray-700 hover:border-red-500 transition-colors"></div>
-            </div>
-            <button onclick="closeAllOverlays()" class="absolute top-2 right-2 text-gray-500 hover:text-white">×</button>
-        </div>
-
-        <!-- 3. Amigos (Derecha) -->
-        <div id="overlay-friends" class="overlay-panel p-4 flex flex-col">
-            <h3 class="text-red-500 font-bold text-sm mb-4 border-b border-red-900 pb-2 mt-8 text-right">ALIADOS / ENEMIGOS</h3>
-            
-            <div class="flex flex-col gap-4 overflow-y-auto no-scrollbar flex-1">
-                <!-- Friend 1 -->
-                <div class="flex items-center gap-3 justify-end group cursor-pointer">
-                    <div class="text-right">
-                        <div class="text-[10px] font-bold group-hover:text-red-400 transition-colors">Uraume</div>
-                        <div class="text-[8px] text-green-500">Online</div>
-                    </div>
-                    <div class="w-8 h-8 rounded-full bg-gray-700 border border-gray-500 overflow-hidden">
-                        <img src="https://i.pinimg.com/236x/87/15/e3/8715e3477105d762089f212265005934.jpg" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiMzMzMiLz48L3N2Zz4='" class="w-full h-full object-cover">
-                    </div>
-                </div>
-
-                <!-- Friend 2 -->
-                <div class="flex items-center gap-3 justify-end group cursor-pointer">
-                    <div class="text-right">
-                        <div class="text-[10px] font-bold group-hover:text-red-400 transition-colors">Kenjaku</div>
-                        <div class="text-[8px] text-yellow-500">Away</div>
-                    </div>
-                    <div class="w-8 h-8 rounded-full bg-gray-700 border border-gray-500 overflow-hidden">
-                         <div class="w-full h-full bg-gray-600 flex items-center justify-center text-[10px]">K</div>
-                    </div>
-                </div>
-
-                <!-- Friend 3 -->
-                <div class="flex items-center gap-3 justify-end group cursor-pointer">
-                    <div class="text-right">
-                        <div class="text-[10px] font-bold group-hover:text-red-400 transition-colors">Megumi F.</div>
-                        <div class="text-[8px] text-gray-500">Offline</div>
-                    </div>
-                    <div class="w-8 h-8 rounded-full bg-gray-700 border border-gray-500 overflow-hidden">
-                        <div class="w-full h-full bg-gray-600 flex items-center justify-center text-[10px]">M</div>
-                    </div>
-                </div>
-            </div>
-            
-            <button onclick="closeAllOverlays()" class="absolute top-4 left-4 text-gray-500 hover:text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        </div>
-        
-        <!-- Bottom Decoration -->
-        <div class="absolute bottom-2 w-1/4 h-1 bg-white/10 rounded-full left-1/2 transform -translate-x-1/2 z-30"></div>
-    </div>
-
-    <script>
-        // Update Time Function
-        function updateDateTime() {
-            const now = new Date();
-            const dateOptions = { day: 'numeric', month: 'short' };
-            const dayOptions = { weekday: 'long' };
-            const yearOptions = { year: 'numeric' };
-
-            const dateString = now.toLocaleDateString(undefined, dateOptions).toUpperCase();
-            const dayString = now.toLocaleDateString(undefined, dayOptions);
-            const yearString = now.toLocaleDateString(undefined, yearOptions);
-
-            const displayElement = document.getElementById('date-display');
-            displayElement.innerHTML = `
-                <div class="text-xl tracking-tighter">${dateString}</div>
-                <div class="text-[9px] font-normal opacity-60 font-sans tracking-wide">${dayString} // ${yearString}</div>
-            `;
-        }
-        updateDateTime();
-        setInterval(updateDateTime, 60000);
-
-        // Overlay Logic
-        function toggleOverlay(id) {
-            // Close others first if needed, or leave them open. Let's close others for cleaner UI.
-            const overlays = document.querySelectorAll('.overlay-panel');
-            const target = document.getElementById(id);
-            
-            const isAlreadyActive = target.classList.contains('active');
-
-            // Close all
-            overlays.forEach(el => el.classList.remove('active'));
-
-            // Open target if it wasn't open
-            if (!isAlreadyActive) {
-                target.classList.add('active');
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                opacity: 1;
+                text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 20px #ff4d00;
+            }
+            20%, 24%, 55% {
+                opacity: 0.7;
+                text-shadow: none;
             }
         }
 
-        function closeAllOverlays() {
-            const overlays = document.querySelectorAll('.overlay-panel');
-            overlays.forEach(el => el.classList.remove('active'));
+        /* Character Floating Animation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 5s ease-in-out infinite;
         }
 
-        // Close when clicking main frame area but not on nav or overlays
-        document.getElementById('main-frame').addEventListener('click', function(e) {
-            if (e.target.tagName === 'NAV' || e.target.closest('nav') || e.target.closest('.overlay-panel')) return;
-            // closeAllOverlays(); // Uncomment if you want clicks on background to close menus
+        .jp-text {
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        
+        /* Music Player Marquee */
+        .marquee {
+            white-space: nowrap;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        .marquee p {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 12s linear infinite;
+        }
+        @keyframes marquee {
+            0%   { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+
+        /* Glassmorphism Panel with requested Background Image */
+        .glass-panel {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                        url('https://i.pinimg.com/1200x/69/51/df/6951dfc299ecc304db62cb44adb46545.jpg');
+            background-size: cover;
+            background-position: center;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+        }
+
+        .corner-img {
+            border: 2px solid rgba(185, 28, 28, 0.5);
+            transition: all 0.4s ease;
+        }
+        .corner-img:hover {
+            transform: scale(1.08) rotate(2deg);
+            border-color: #ff0000;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+        }
+
+        /* Music Player Auto-Minimize Styles */
+        #musicPlayer {
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 280px;
+        }
+        #musicPlayer.minimized {
+            max-width: 68px;
+            padding: 8px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.8);
+            border-color: rgba(255, 0, 0, 0.5);
+            cursor: pointer;
+        }
+        #musicPlayer.minimized .player-content {
+            opacity: 0;
+            pointer-events: none;
+            width: 0;
+            overflow: hidden;
+        }
+        .player-content {
+            transition: opacity 0.3s ease;
+        }
+
+        /* Scrollbar hide */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="p-2 lg:p-4 relative">
+
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+        <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-red-900 rounded-full mix-blend-screen filter blur-[150px] opacity-30"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-orange-900 rounded-full mix-blend-screen filter blur-[150px] opacity-20"></div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="relative w-full max-w-7xl h-[95vh] lg:h-[90vh] glass-panel rounded-3xl p-4 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-4 overflow-hidden border-t border-white/5 shadow-2xl">
+        
+        <!-- Left: Stats -->
+        <div class="lg:col-span-3 flex flex-col h-full z-20 order-2 lg:order-1 relative justify-between">
+            
+            <div class="flex flex-col gap-4 lg:gap-6 justify-center mt-2 lg:mt-0 jp-text flex-1 hide-scrollbar overflow-y-auto lg:overflow-visible pr-2">
+                <div class="group">
+                    <h3 class="text-red-500 text-[10px] lg:text-xs tracking-widest uppercase mb-0.5 opacity-80">Name</h3>
+                    <h1 class="text-2xl lg:text-3xl font-bold text-white group-hover:text-red-400 transition-colors">両面宿儺</h1>
+                    <p class="text-[10px] text-gray-400 tracking-widest">RYŌMEN SUKUNA</p>
+                </div>
+                
+                <div class="h-px w-16 bg-gradient-to-r from-red-600 to-transparent my-1"></div>
+
+                <div class="group">
+                    <h3 class="text-red-500 text-[10px] lg:text-xs tracking-widest uppercase mb-0.5 opacity-80">Technique</h3>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-skull text-red-600 text-sm"></i>
+                        <h2 class="text-lg lg:text-xl font-medium">御厨子 <span class="text-[10px] lg:text-xs text-gray-400 font-light">(Shrine)</span></h2>
+                    </div>
+                </div>
+
+                <div class="group">
+                    <h3 class="text-red-500 text-[10px] lg:text-xs tracking-widest uppercase mb-0.5 opacity-80">Affiliation</h3>
+                    <h2 class="text-lg lg:text-xl font-medium">呪いの王</h2>
+                    <p class="text-[10px] text-gray-400">King of Curses / Heian Era</p>
+                </div>
+
+                <div class="group">
+                    <h3 class="text-red-500 text-[10px] lg:text-xs tracking-widest uppercase mb-0.5 opacity-80">Artifacts</h3>
+                    <h2 class="text-lg lg:text-xl font-medium">神武解</h2>
+                    <p class="text-[10px] text-gray-400">Kamutoke & Hiten</p>
+                </div>
+            </div>
+
+            <!-- Bottom Left Images -->
+            <div class="flex gap-4 z-30 mt-4 flex-shrink-0 pt-4 border-t border-white/10 lg:border-none">
+                <div class="relative w-20 h-20 lg:w-32 lg:h-32 rounded-lg overflow-hidden corner-img shadow-xl shadow-red-900/40">
+                    <img src="https://i.pinimg.com/1200x/95/6e/7c/956e7ca2076f3d24ffd1c20ef58e8a74.jpg" alt="Sukuna Detail 1" class="w-full h-full object-cover">
+                </div>
+                <div class="relative w-20 h-20 lg:w-32 lg:h-32 rounded-lg overflow-hidden corner-img shadow-xl shadow-red-900/40">
+                    <img src="https://i.pinimg.com/736x/6c/9c/45/6c9c45fecc13694f0639f6fb798cb201.jpg" alt="Sukuna Detail 2" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </div>
+
+        <!-- Center: Main Image -->
+        <div class="lg:col-span-6 relative flex justify-center items-end z-10 order-1 lg:order-2 h-full min-h-0">
+            <div class="absolute top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] aspect-square border border-red-600/20 rounded-full rotate-12 pointer-events-none"></div>
+            <div class="absolute top-[50%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80%] aspect-square border-4 border-double border-red-900/10 rounded-full -rotate-45 pointer-events-none"></div>
+
+            <img src="https://xatimg.com/image/Insz2vOoim1j.png" 
+                 alt="Ryomen Sukuna" 
+                 class="h-auto max-h-[90%] w-auto object-contain animate-float drop-shadow-[0_0_35px_rgba(255,0,0,0.4)] brightness-110 relative z-10">
+                 
+            <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full h-32 bg-gradient-to-t from-black via-transparent to-transparent opacity-60 z-0"></div>
+        </div>
+
+        <!-- Right: Vertical Text & Player -->
+        <div class="lg:col-span-3 flex flex-col items-center lg:items-end h-full z-20 order-3 relative justify-between">
+            
+            <div class="absolute right-[50%] lg:right-[35%] top-0 bottom-0 h-[80%] my-auto flex gap-2 opacity-40 pointer-events-none">
+                <div class="w-[1px] h-full bg-red-600"></div>
+                <div class="w-[4px] h-full bg-red-800 shadow-[0_0_15px_rgba(153,27,27,1)]"></div>
+                <div class="w-[1px] h-full bg-red-600"></div>
+            </div>
+
+            <div class="flex flex-col items-center justify-center flex-1 gap-1 mr-0 lg:mr-10 relative z-10 min-h-0">
+                <div class="text-5xl lg:text-7xl font-black text-red-100 neon-text flex flex-col leading-none tracking-tighter">
+                    <span>F</span>
+                    <span>R</span>
+                    <span>E</span>
+                    <span>A</span>
+                    <span>K</span>
+                </div>
+            </div>
+
+            <!-- Music Player con Auto-Minimize -->
+            <div id="musicPlayer" class="w-full flex-shrink-0 mt-4 glass-panel rounded-xl p-3 flex flex-col gap-2 border border-red-900/50 shadow-2xl z-40 bg-black/80">
+                <div class="flex items-center gap-3">
+                    <!-- Album Art Circle -->
+                    <div id="discTrigger" class="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border border-red-600/50 shadow-[0_0_10px_rgba(255,0,0,0.3)]">
+                        <img src="https://i.pinimg.com/736x/0b/a5/ce/0ba5ce7d660419ab632cf31cc08a9bd9.jpg" class="w-full h-full object-cover animate-[spin_10s_linear_infinite]" alt="Sukuna OST">
+                    </div>
+                    
+                    <!-- Text Info (Hides when minimized) -->
+                    <div class="flex-1 overflow-hidden player-content">
+                        <div class="marquee w-full">
+                            <p class="text-[10px] font-bold text-red-100 tracking-wider">Jujutsu Kaisen OST - Sukuna Suite</p>
+                        </div>
+                        <div class="flex gap-1 mt-1">
+                            <span class="w-1 h-2 bg-red-600 rounded-full animate-bounce"></span>
+                            <span class="w-1 h-4 bg-orange-700 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                            <span class="w-1 h-2.5 bg-red-500 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Controls (Hides when minimized) -->
+                <div class="flex flex-col gap-1.5 player-content">
+                    <div class="w-full bg-neutral-800 h-1 rounded-full overflow-hidden">
+                        <div class="bg-gradient-to-r from-red-600 to-red-900 w-[75%] h-full rounded-full"></div>
+                    </div>
+                    <div class="flex justify-between items-center text-red-200 text-[10px] px-1">
+                        <span>2:45</span>
+                        <div class="flex gap-4 text-sm">
+                            <i class="fa-solid fa-backward hover:text-white cursor-pointer transition"></i>
+                            <i id="playPause" class="fa-solid fa-pause hover:text-white cursor-pointer transition"></i>
+                            <i class="fa-solid fa-forward hover:text-white cursor-pointer transition"></i>
+                        </div>
+                        <span>5:12</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Decorative Faint Kanji Background -->
+        <div class="absolute bottom-4 left-4 text-[12rem] lg:text-[18rem] font-bold text-red-600 opacity-[0.05] select-none pointer-events-none jp-text z-0 leading-none">
+            呪
+        </div>
+    </main>
+
+    <script>
+        const musicPlayer = document.getElementById('musicPlayer');
+        const playBtn = document.getElementById('playPause');
+        const discTrigger = document.getElementById('discTrigger');
+        let isPlaying = true;
+        let minimizeTimeout;
+
+        // Función para minimizar
+        const startMinimizeTimer = () => {
+            clearTimeout(minimizeTimeout);
+            minimizeTimeout = setTimeout(() => {
+                musicPlayer.classList.add('minimized');
+            }, 5000);
+        };
+
+        // Iniciar temporizador al cargar
+        startMinimizeTimer();
+
+        // Expandir al pasar el mouse o hacer click en el disco
+        musicPlayer.addEventListener('mouseenter', () => {
+            musicPlayer.classList.remove('minimized');
+            clearTimeout(minimizeTimeout);
         });
+
+        musicPlayer.addEventListener('mouseleave', () => {
+            if (!musicPlayer.classList.contains('minimized')) {
+                startMinimizeTimer();
+            }
+        });
+
+        // Click para expandir en móvil si está minimizado
+        musicPlayer.addEventListener('click', () => {
+            if (musicPlayer.classList.contains('minimized')) {
+                musicPlayer.classList.remove('minimized');
+                startMinimizeTimer();
+            }
+        });
+
+        // Lógica Play/Pause
+        if(playBtn) {
+            playBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Evitar que el click minimice/expand mientas se pulsa pausa
+                isPlaying = !isPlaying;
+                playBtn.className = isPlaying ? 'fa-solid fa-pause hover:text-white cursor-pointer transition' : 'fa-solid fa-play hover:text-white cursor-pointer transition';
+                
+                const albumArt = document.querySelector('.animate-\\[spin_10s_linear_infinite\\]');
+                if (albumArt) {
+                    albumArt.style.animationPlayState = isPlaying ? 'running' : 'paused';
+                }
+            });
+        }
     </script>
 </body>
 </html>
