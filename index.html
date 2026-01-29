@@ -43,6 +43,24 @@
             position: fixed; inset: 0; pointer-events: none; z-index: 999; opacity: 0.6;
         }
 
+        /* --- UID DISPLAY (ID ÚNICO) --- */
+        .uid-display {
+            position: fixed;
+            top: 25px;
+            left: 30px;
+            font-family: 'Share Tech Mono', monospace;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.9rem;
+            letter-spacing: 0.15em;
+            z-index: 90; /* Debajo de la intro, encima del resto */
+            pointer-events: none;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+        }
+        .uid-display::before {
+            content: 'UID: ';
+            color: rgba(255, 215, 0, 0.4); /* Un toque dorado sutil */
+        }
+
         /* --- INTRO SCREEN --- */
         #intro-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -266,11 +284,10 @@
         /* --- TITULO VOID xHAZ (CENTRO ABSOLUTO Y ESTÁTICO) --- */
         .main-name {
             font-family: 'Orbitron', sans-serif;
-            /* Tamaño reducido un poco */
             font-size: 5rem; 
             font-weight: 900; line-height: 1;
             color: transparent; 
-            -webkit-text-stroke: 2px rgba(255,255,255,0.95); /* Borde más fuerte */
+            -webkit-text-stroke: 2px rgba(255,255,255,0.95);
             
             position: absolute;
             top: 50%; 
@@ -280,7 +297,6 @@
             z-index: 20;
             white-space: nowrap;
             
-            /* Sombra reforzada para leerse sobre el fondo más claro */
             text-shadow: 
                 0 0 20px rgba(0,0,0,0.8), 
                 5px 0 0 rgba(255,0,0,0.3), 
@@ -290,12 +306,11 @@
         }
 
         .main-name::before {
-            content: 'xHAZ'; /* Actualizado a MAYÚSCULAS */
+            content: 'xHAZ';
             position: absolute; left: 0; top: 0;
             color: rgba(255,255,255,0.2); filter: blur(4px); z-index: -1;
         }
 
-        /* Nueva animación sin movimiento */
         @keyframes voidGlitchStatic {
             0% { opacity: 1; text-shadow: 0 0 10px rgba(0,0,0,0.8); filter: blur(0); }
             20% { opacity: 0.95; text-shadow: 0 0 15px rgba(255,255,255,0.4); }
@@ -315,13 +330,12 @@
             align-items: center;
             justify-content: center;
             z-index: 20;
-            /* Sombra de texto para asegurar legibilidad */
             text-shadow: 0 1px 3px rgba(0,0,0,0.9);
         }
 
         .details {
             font-family: 'Share Tech Mono', monospace;
-            color: #ccc; /* Un poco más claro */
+            color: #ccc;
             font-size: 1.2rem; letter-spacing: 0.2em;
             border-top: none; 
             padding-top: 0.5rem; 
@@ -353,6 +367,9 @@
 
     <div class="room-bg"></div>
     <div class="scanlines"></div>
+
+    <!-- ID DE RECONOCIMIENTO (UID) -->
+    <div class="uid-display">1004002</div>
 
     <!-- 1. INTRO SCREEN -->
     <div id="intro-screen">
@@ -396,10 +413,12 @@
                     <div class="details">
                         <span id="user-status">CHECKING...</span>
                     </div>
-                    <div class="mt-4 text-xs text-gray-300 font-mono z-20 text-center" style="text-shadow: 0 1px 2px black;">
-                        <p>> SYSTEM CHECK... OK</p>
-                        <p>> LIGHTNING LINK... STABLE</p>
-                        <p>> WELCOME USER</p>
+                    <div class="mt-4 text-xs text-gray-300 font-mono z-20 text-center leading-relaxed" style="text-shadow: 0 1px 2px black;">
+                        <!-- Fuente igualada al sistema y cursiva removida -->
+                        <p class="mb-2 text-gray-100 tracking-wide">"Nos conocimos, hablamos y fue épico... pero salió el sol y llegó la realidad."</p>
+                        <p class="tracking-widest text-gray-400">> SYSTEM_CORE: 1998</p>
+                        <!-- Nuevo emoji con glow -->
+                        <p class="text-[#FFD700]" style="text-shadow: 0 0 15px rgba(255, 215, 0, 0.9);">> SIGN: LEO ♌︎</p>
                     </div>
                 </div>
             </div>
@@ -416,8 +435,9 @@
             "https://i.pinimg.com/736x/fc/85/52/fc8552c0d4b9c5b922798651274ae0a6.jpg",
             "https://i.pinimg.com/736x/1e/7d/27/1e7d27e7b1789b15fa8ea5994520d464.jpg",
             "https://i.pinimg.com/736x/3f/cb/47/3fcb474229a46b866e6a078686cd9407.jpg",
-            "https://i.pinimg.com/736x/70/7a/c3/707ac39a64bf12f6bd49e39ebbc8c68b.jpg",
-            "https://i.pinimg.com/736x/d9/7d/a4/d97da43d34687c5d79496dd7a1079de6.jpg",
+            // Nuevas imágenes en posición 5 y 6
+            "https://i.pinimg.com/736x/37/79/90/3779905f018b30b1f88b4d2a7db2268c.jpg",
+            "https://i.pinimg.com/736x/04/b5/b6/04b5b6762ae5adf2c22da780b6587614.jpg",
             "https://i.pinimg.com/736x/f1/18/82/f11882e66e3f32901657392b1c3ca206.jpg",
             "https://i.pinimg.com/736x/2e/1d/f6/2e1df67af440e9f9d951974935021a9e.jpg",
             "https://i.pinimg.com/736x/a7/2e/71/a72e7198ed521ac93723df6e7cee3e30.jpg"
