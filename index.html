@@ -3,400 +3,425 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sukuna</title>
+    <title>xHaz</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Noto+Sans+JP:wght@300;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rubik+Glitch&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
     <style>
+        :root {
+            --bg-void: #050505;
+            --text-main: #e0e0e0;
+            --text-dim: #6b7280;
+            --thunder-core: #ffffff;
+            --thunder-glow: #FFD700;
+        }
+
         body {
-            font-family: 'Cinzel', serif;
-            background-color: #00050a;
-            background-image: radial-gradient(circle at 50% 50%, #0b1a2e 0%, #000000 100%);
-            color: white;
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Share Tech Mono', monospace;
+            overflow: hidden;
             height: 100vh;
             width: 100vw;
-            overflow: hidden;
+            margin: 0;
             display: flex;
-            align-items: center;
             justify-content: center;
-            user-select: none;
-            -webkit-user-select: none;
+            align-items: center;
         }
 
-        /* --- EFECTO DE FRAGMENTACIÓN REFINADO --- */
-        .fragment-text {
+        /* --- FONDO & SCANLINES --- */
+        .room-bg {
+            position: fixed; inset: 0;
+            background: linear-gradient(rgba(0,0,0,0.95), rgba(0,0,0,0.9)),
+                        repeating-linear-gradient(0deg, transparent, transparent 1px, #111 1px, #111 2px);
+            z-index: -2;
+        }
+        .scanlines {
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
+            background-size: 100% 4px;
+            position: fixed; inset: 0; pointer-events: none; z-index: 999; opacity: 0.6;
+        }
+
+        /* --- INTRO SCREEN --- */
+        #intro-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 100;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 1s ease-out; gap: 20px;
+        }
+        #intro-screen.hidden { opacity: 0; pointer-events: none; }
+
+        .intro-cover-container {
+            width: 500px; max-width: 90vw; height: 280px;
+            overflow: hidden;
+            border: 1px solid var(--text-dim);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+        .intro-gif { width: 100%; height: 100%; object-fit: cover; }
+
+        /* EFECTO VOID FRAGMENTADO PARA INTRO */
+        .toxic-title-intro {
+            font-family: 'Rubik Glitch', sans-serif;
+            font-size: 6rem; 
+            color: white;
+            text-transform: uppercase; 
+            letter-spacing: 5px; 
+            margin-top: 10px;
             position: relative;
-            color: #ffffff;
-            font-weight: 900;
-            display: inline-block;
-            text-transform: uppercase;
-            text-shadow: 0 0 5px rgba(0, 170, 255, 0.3);
         }
 
-        .fragment-text::before,
-        .fragment-text::after {
-            content: attr(data-text);
+        .toxic-title-intro::before,
+        .toxic-title-intro::after {
+            content: "xHaz";
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: transparent;
+            background: #000; /* Fondo para recortar */
         }
 
-        .fragment-text::before {
-            color: #000000;
+        .toxic-title-intro::before {
+            color: #0ff;
             z-index: -1;
-            left: -2px;
-            animation: glitch-black 0.5s infinite;
-            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
-            -webkit-text-stroke: 0.5px #00aaff;
+            animation: fragment-top 2s infinite linear alternate-reverse;
         }
 
-        .fragment-text::after {
-            color: #ffffff;
+        .toxic-title-intro::after {
+            color: #f0f;
             z-index: -2;
-            left: 2px;
-            animation: glitch-blue 0.5s reverse infinite;
-            clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
-            text-shadow: -1px 0 #00aaff;
+            animation: fragment-bottom 3s infinite linear alternate-reverse;
         }
 
-        @keyframes glitch-black {
-            0% { transform: translate(0); }
-            50% { transform: translate(-2px, 1px); }
-            100% { transform: translate(0); }
+        @keyframes fragment-top {
+            0% { clip-path: inset(0 0 60% 0); transform: translate(-2px, 0); }
+            20% { clip-path: inset(0 0 60% 0); transform: translate(2px, 0); }
+            40% { clip-path: inset(40% 0 20% 0); transform: translate(-2px, 0); }
+            60% { clip-path: inset(80% 0 0 0); transform: translate(2px, 0); }
+            80% { clip-path: inset(0 0 40% 0); transform: translate(-1px, 1px); }
+            100% { clip-path: inset(20% 0 60% 0); transform: translate(1px, -1px); }
         }
 
-        @keyframes glitch-blue {
-            0% { transform: translate(0); }
-            50% { transform: translate(2px, -1px); }
-            100% { transform: translate(0); }
+        @keyframes fragment-bottom {
+            0% { clip-path: inset(60% 0 0 0); transform: translate(2px, 0); }
+            20% { clip-path: inset(60% 0 0 0); transform: translate(-2px, 0); }
+            40% { clip-path: inset(20% 0 40% 0); transform: translate(2px, 0); }
+            60% { clip-path: inset(0 0 80% 0); transform: translate(-2px, 0); }
+            80% { clip-path: inset(40% 0 0 0); transform: translate(1px, -1px); }
+            100% { clip-path: inset(60% 0 20% 0); transform: translate(-1px, 1px); }
         }
 
-        /* --- ANIMACIONES --- */
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
+        .enter-btn {
+            background: transparent; border: 1px solid white; color: white;
+            font-family: 'Share Tech Mono', monospace; font-size: 1.2rem;
+            padding: 10px 40px; letter-spacing: 4px; cursor: pointer;
+            transition: all 0.3s ease; text-transform: uppercase;
         }
-        .animate-float {
-            animation: float 4s ease-in-out infinite;
+        .enter-btn:hover { background: white; color: black; box-shadow: 0 0 15px rgba(255, 255, 255, 0.5); }
+
+        /* --- MAIN TRANSITION --- */
+        #main-container {
+            position: absolute; width: 100vw; height: 100vh;
+            display: grid; grid-template-columns: repeat(9, 1fr);
+            grid-template-rows: 1fr; gap: 2px;
+            opacity: 0; transition: opacity 1s; z-index: 10;
+        }
+        #main-container.active { opacity: 1; }
+        #main-container.dimmed { opacity: 0.15; filter: blur(2px) grayscale(100%); transition: all 1.5s ease; }
+
+        .char-box {
+            background: #0a0a0a; height: 100%; width: 100%;
+            display: flex; align-items: flex-end; justify-content: center;
+            overflow: hidden; opacity: 0; transform: translateY(100vh);
+            transition: transform 0.5s ease; border-right: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+        }
+        .char-box.reveal { transform: translateY(0); opacity: 1; }
+        .char-box img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: grayscale(100%) contrast(1.2); opacity: 0.6; transition: opacity 0.3s;
+        }
+        .char-box:hover img { opacity: 1; }
+
+        /* --- FINAL CARD --- */
+        #final-card-wrapper {
+            position: fixed; z-index: 200; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transform: scale(0.95);
+            transition: all 1s ease;
+        }
+        #final-card-wrapper.show { opacity: 1; pointer-events: auto; transform: scale(1); }
+
+        .beige-card {
+            display: flex; width: 900px; max-width: 90vw; height: 60vh;
+            background: #000; border: 1px solid #333;
+            box-shadow: 0 0 80px rgba(0,0,0,0.9); position: relative;
+            overflow: visible; /* Permitir que el rayo salga un poco si es necesario */
         }
 
-        .jp-text {
-            font-family: 'Noto Sans JP', sans-serif;
+        .img-section {
+            width: 50%; height: 100%; overflow: hidden; position: relative;
+            border-right: 1px solid #333;
+        }
+        .img-section img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: grayscale(100%); transition: filter 0.5s;
+        }
+        .beige-card:hover .img-section img { filter: grayscale(0%); }
+
+        /* --- SECCIÓN DERECHA CON TRUENO VISIBLE --- */
+        .text-section {
+            width: 50%; height: 100%; padding: 3rem;
+            display: flex; flex-direction: column; position: relative;
+            background: #030303; overflow: hidden;
         }
 
-        .glass-panel {
-            background: linear-gradient(rgba(0,10,20,0.8), rgba(0,10,20,0.8)), 
-                        url('https://xatimg.com/image/JoUdAIwiyq92.png');
-            background-size: cover;
-            background-position: center;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(0, 170, 255, 0.15);
-            box-shadow: 0 15px 50px 0 rgba(0, 0, 0, 0.8);
-        }
-
-        /* --- REPRODUCTOR COMPACTO POSICIONADO --- */
-        #musicPlayer {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        #musicPlayer.minimized {
-            width: 50px !important;
-            height: 50px !important;
-            padding: 0px; 
-            border-radius: 50%;
-            background: rgba(0, 15, 30, 0.95);
-            border-color: rgba(0, 170, 255, 0.6);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #musicPlayer.minimized .player-content,
-        #musicPlayer.minimized #closePlayer {
-            display: none;
+        /* Contenedor del Trueno */
+        .thunder-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 2; /* Encima del texto si es necesario, o detrás con z-index 0 */
         }
         
-        #musicPlayer.minimized > div {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0;
+        /* Animación de Flash de Tormenta (Fondo) */
+        @keyframes thunderFlash {
+            0% { background-color: transparent; }
+            2% { background-color: rgba(255, 255, 255, 0.2); }
+            4% { background-color: transparent; }
+            6% { background-color: rgba(255, 215, 0, 0.1); }
+            8% { background-color: transparent; }
+            100% { background-color: transparent; }
         }
 
-        img {
-            -webkit-user-drag: none;
-            pointer-events: none;
+        /* SVG del Rayo Épico */
+        .lightning-svg {
+            position: absolute;
+            top: 5%; right: 5%;
+            width: 80%; height: 90%;
+            fill: none;
+            stroke: white; /* Núcleo blanco */
+            stroke-width: 4;
+            filter: drop-shadow(0 0 10px #FFD700) drop-shadow(0 0 20px #FF4500); /* Glow intenso */
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0; 
+            transform: scale(1.2);
         }
 
-        /* --- LISTA DE AMIGOS CURRICULUM STYLE --- */
-        #friendsList {
-            max-height: 0;
-            opacity: 0;
-            transition: all 0.5s ease;
-            overflow: hidden;
-            width: 100%;
-            padding-left: 10px;
-            padding-right: 10px;
-        }
-        #friendsList.open {
-            max-height: 200px;
-            opacity: 1;
-            margin-top: 1rem;
-            padding-top: 12px;
-            padding-bottom: 12px;
+        /* Animación agresiva del SVG */
+        @keyframes strike {
+            0% { opacity: 0; stroke-dashoffset: 2000; }
+            2% { opacity: 1; stroke-dashoffset: 0; } /* Aparece rápido */
+            10% { opacity: 1; }
+            12% { opacity: 0; } /* Desaparece */
+            14% { opacity: 1; } /* Rebote visual */
+            20% { opacity: 0; }
+            100% { opacity: 0; }
         }
 
-        .friend-img {
-            border: 1px solid rgba(0, 170, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-        .friend-item:hover .friend-img {
-            border-color: #00aaff;
-            box-shadow: 0 0 10px rgba(0, 170, 255, 0.4);
-            transform: scale(1.05);
+        .active-storm .thunder-container {
+            animation: thunderFlash 5s infinite ease-in-out;
+            animation-delay: 1s; /* Espera un poco para sincronizar */
         }
         
-        .marquee {
-            white-space: nowrap;
-            overflow: hidden;
-            box-sizing: border-box;
+        .active-storm .lightning-svg {
+            stroke-dasharray: 2000;
+            stroke-dashoffset: 2000;
+            animation: strike 5s infinite;
+            animation-delay: 1s; /* Sincronizado con el flash */
         }
-        .marquee p {
-            display: inline-block;
-            padding-left: 100%;
-            animation: marquee 10s linear infinite;
+
+
+        /* --- TITULO VOID xHaz (FINAL) --- */
+        .main-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 5rem;
+            font-weight: 900;
+            line-height: 1;
+            color: transparent; 
+            -webkit-text-stroke: 2px rgba(255,255,255,0.8);
+            margin-top: auto; margin-bottom: 1rem;
+            position: relative;
+            z-index: 10;
+            
+            text-shadow: 
+                0 0 10px rgba(255,255,255,0.1),
+                5px 0 0 rgba(255,0,0,0.2), 
+                -5px 0 0 rgba(0,0,255,0.2);
+            animation: voidGlitch 2.5s infinite alternate-reverse;
         }
-        @keyframes marquee {
-            0%   { transform: translate(0, 0); }
-            100% { transform: translate(-100%, 0); }
+
+        .main-name::before {
+            content: 'xHaz';
+            position: absolute; left: 0; top: 0;
+            color: rgba(255,255,255,0.1);
+            filter: blur(4px);
+            z-index: -1;
+        }
+
+        @keyframes voidGlitch {
+            0% { opacity: 1; transform: scale(1) skew(0deg); text-shadow: 0 0 10px rgba(255,255,255,0.1); }
+            20% { opacity: 0.8; transform: skew(-2deg); }
+            40% { opacity: 1; transform: skew(2deg); text-shadow: 2px 2px 0 #000; }
+            42% { opacity: 0.3; transform: translate(5px, 0); }
+            44% { opacity: 1; transform: translate(0, 0); }
+            60% { filter: blur(1px); }
+            80% { opacity: 0.9; transform: scale(1.02); }
+            90% { opacity: 0.1; } 
+            92% { opacity: 1; }
+            100% { opacity: 1; filter: blur(0); }
+        }
+
+        .details {
+            font-family: 'Share Tech Mono', monospace;
+            color: #666; font-size: 1rem; letter-spacing: 0.2em;
+            border-top: 1px solid #333; padding-top: 1rem;
+            display: flex; justify-content: space-between;
+            z-index: 10;
+        }
+
+        .corner-deco { position: absolute; width: 20px; height: 20px; border: 2px solid white; transition: all 0.3s; }
+        .tl { top: -1px; left: -1px; border-bottom: none; border-right: none; }
+        .tr { top: -1px; right: -1px; border-bottom: none; border-left: none; }
+        .bl { bottom: -1px; left: -1px; border-top: none; border-right: none; }
+        .br { bottom: -1px; right: -1px; border-top: none; border-left: none; }
+
+        @media (max-width: 768px) {
+            #main-container { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); }
+            .beige-card { flex-direction: column; height: auto; }
+            .img-section, .text-section { width: 100%; height: 300px; }
+            .lightning-svg { width: 100%; height: 100%; top: 0; right: 0; }
+            .main-name { font-size: 3.5rem; }
+            .toxic-title-intro { font-size: 4rem; }
         }
     </style>
 </head>
-<body class="p-4 relative" id="bodyRoot">
+<body>
 
-    <!-- Decoración de Fondo -->
-    <div class="absolute inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-900/10 rounded-full filter blur-[120px]"></div>
-        <div class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-cyan-900/10 rounded-full filter blur-[120px]"></div>
+    <div class="room-bg"></div>
+    <div class="scanlines"></div>
+
+    <!-- 1. INTRO SCREEN -->
+    <div id="intro-screen">
+        <div class="intro-cover-container">
+            <img src="https://i.pinimg.com/originals/9c/2b/56/9c2b5679e268164fa34931f16d877c94.gif" alt="Cover" class="intro-gif">
+        </div>
+        <!-- Título con efecto Void Fragmentado -->
+        <h1 class="toxic-title-intro" data-text="xHaz">xHaz</h1>
+        <button id="start-btn" class="enter-btn">INITIATE</button>
     </div>
 
-    <!-- Contenedor Estilo Currículum / Ficha -->
-    <main class="main-container relative w-full max-w-2xl h-auto max-h-[95vh] glass-panel rounded-2xl p-6 md:p-8 flex flex-col items-center border-t border-white/10 shadow-2xl z-10">
-        
-        <!-- Título Pequeño y Centrado -->
-        <div class="text-center mb-4">
-            <h2 class="text-xl md:text-3xl lg:text-4xl fragment-text jp-text tracking-[0.15em]" data-text="祝福された">
-                祝福された
-            </h2>
-            <div class="h-px w-24 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent mx-auto mt-2"></div>
-        </div>
+    <!-- 2. MAIN GRID -->
+    <div id="main-container"></div>
 
-        <!-- Imagen Principal Reducida y Centrada -->
-        <div class="relative flex flex-col justify-center items-center w-full mb-6">
-            <div class="absolute w-48 md:w-64 aspect-square border border-cyan-500/10 rounded-full pointer-events-none"></div>
-            
-            <img src="https://xatimg.com/image/jNe6hpHmexU7.png" 
-                 alt="Sukuna" 
-                 class="h-[18vh] md:h-[25vh] w-auto object-contain animate-float drop-shadow-[0_0_20px_rgba(0,170,255,0.2)] brightness-110 z-10">
-        </div>
+    <!-- 3. FINAL CARD -->
+    <div id="final-card-wrapper">
+        <!-- La clase active-storm se añade via JS -->
+        <div class="beige-card" id="final-card-element">
+            <div class="corner-deco tl"></div>
+            <div class="corner-deco tr"></div>
+            <div class="corner-deco bl"></div>
+            <div class="corner-deco br"></div>
 
-        <!-- Botón Amigos Reducido (Solo Japonés) -->
-        <div class="w-full flex flex-col items-center mb-4">
-            <button id="toggleFriends" class="group relative px-8 py-1.5 bg-blue-950/30 border border-cyan-600/30 rounded-lg hover:bg-blue-800/50 transition-all duration-300">
-                <span class="jp-text text-base md:text-xl font-medium tracking-[0.3em] text-cyan-100/80 group-hover:text-white">友達</span>
-            </button>
-
-            <!-- Lista de Amigos Ajustada -->
-            <div id="friendsList" class="flex justify-center flex-wrap gap-4 md:gap-6 items-center">
-                <a href="https://xat.me/iLuguinhoo" target="_blank" class="friend-item flex flex-col items-center gap-1.5 cursor-pointer">
-                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden friend-img">
-                        <img src="https://i.pinimg.com/originals/6d/19/ef/6d19efefb4a82eda8e8eaa6908ca8d8f.jpg" class="w-full h-full object-cover" alt="Lugo">
-                    </div>
-                    <span class="text-[9px] md:text-[10px] font-bold text-cyan-100/60 jp-text">Lugo</span>
-                </a>
-                <a href="https://xat.me/iveneccooo" target="_blank" class="friend-item flex flex-col items-center gap-1.5 cursor-pointer">
-                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden friend-img">
-                        <img src="https://xatimg.com/image/BRnPELeXHfNE.jpg" class="w-full h-full object-cover" alt="Emilio">
-                    </div>
-                    <span class="text-[9px] md:text-[10px] font-bold text-cyan-100/60 jp-text">Emilio</span>
-                </a>
-                <a href="https://xat.me/hielok" target="_blank" class="friend-item flex flex-col items-center gap-1.5 cursor-pointer">
-                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden friend-img">
-                        <img src="https://i.pinimg.com/736x/b7/7c/3a/b77c3a49bd2628b8c5917c0a6098ca1d.jpg" class="w-full h-full object-cover" alt="Hielok">
-                    </div>
-                    <span class="text-[9px] md:text-[10px] font-bold text-cyan-100/60 jp-text">Hielok</span>
-                </a>
-                <a href="https://xat.me/nece" target="_blank" class="friend-item flex flex-col items-center gap-1.5 cursor-pointer">
-                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden friend-img">
-                        <img src="https://cdn.somoskudasai.com/image/27ed3c95c842b440b6ff63ecc15cfeba/452x263/portada_boku-no-kokoro-no-yabai-26.webp" class="w-full h-full object-cover" alt="Nece">
-                    </div>
-                    <span class="text-[9px] md:text-[10px] font-bold text-cyan-100/60 jp-text">Nece</span>
-                </a>
-                <a href="https://xat.me/marv" target="_blank" class="friend-item flex flex-col items-center gap-1.5 cursor-pointer">
-                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden friend-img">
-                        <img src="https://i0.wp.com/codigoespagueti.com/wp-content/uploads/2022/03/yuta-okkotsu-jujutsu-kaisen-0.jpg" class="w-full h-full object-cover" alt="Marvin">
-                    </div>
-                    <span class="text-[9px] md:text-[10px] font-bold text-cyan-100/60 jp-text">Marvin</span>
-                </a>
+            <!-- Imagen Izquierda -->
+            <div class="img-section">
+                <img src="https://i.pinimg.com/736x/f9/8f/e3/f98fe35bbedf2530a944e41c3bd414f6.jpg" id="final-img" alt="Avatar">
+                <div class="absolute inset-0 bg-black opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
             </div>
-        </div>
 
-        <!-- Reproductor Muy Compacto -->
-        <div id="musicPlayer" class="fixed bottom-6 right-6 w-full max-w-[240px] glass-panel rounded-xl p-2.5 flex flex-col gap-2 border border-blue-900/40 shadow-lg bg-black/80 z-50">
-            <div class="flex items-center gap-3 relative">
-                <div id="discTrigger" class="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-cyan-500/30">
-                    <img id="discImg" src="https://images.genius.com/a64e8412179f82aee982bacf95fb88fd.1000x1000x1.png" class="w-full h-full object-cover animate-[spin_10s_linear_infinite]" alt="Feid - Se Lo Juro Mor" style="pointer-events: auto;">
+            <!-- Panel Derecho: Texto y Trueno -->
+            <div class="text-section">
+                
+                <!-- Efecto Trueno Real (Visible) -->
+                <div class="thunder-container">
+                     <!-- SVG complejo del rayo -->
+                    <svg class="lightning-svg" viewBox="0 0 200 400" preserveAspectRatio="xMidYMid meet">
+                        <!-- Rayo principal ramificado -->
+                        <path d="M100,0 L60,120 L120,100 L40,250 L140,200 L80,400" />
+                        <!-- Rama secundaria pequeña -->
+                        <path d="M120,100 L160,140" stroke-width="2" />
+                    </svg>
                 </div>
-                <div class="flex-1 overflow-hidden player-content">
-                    <div class="marquee">
-                         <p class="text-[9px] font-bold text-cyan-100 tracking-tight whitespace-nowrap uppercase">Feid - Se Lo Juro Mor</p>
-                    </div>
-                    <div class="flex gap-1 mt-1">
-                        <span class="w-0.5 h-2 bg-cyan-500 rounded-full animate-pulse"></span>
-                        <span class="w-0.5 h-3 bg-blue-600 rounded-full animate-pulse [animation-delay:0.2s]"></span>
-                    </div>
+                
+                <!-- Nombre VOID -->
+                <h1 class="main-name">xHaz</h1>
+                
+                <div class="details">
+                    <span>STATUS: ONLINE</span>
+                    <span>VOID_CLASSIC</span>
                 </div>
-                <div class="flex items-center gap-2 player-content">
-                    <i id="playPause" class="fa-solid fa-play text-cyan-200 text-[10px] cursor-pointer hover:text-white" style="pointer-events: auto;"></i>
-                    <i id="closePlayer" class="fa-solid fa-xmark text-cyan-200/50 text-[10px] cursor-pointer hover:text-red-500" style="pointer-events: auto;"></i>
+
+                <div class="mt-4 text-xs text-gray-700 font-mono z-10">
+                    <p>> SYSTEM CHECK... OK</p>
+                    <p>> LIGHTNING LINK... STABLE</p>
+                    <p>> WELCOME USER</p>
                 </div>
             </div>
-            <div class="w-full bg-neutral-900 h-0.5 rounded-full overflow-hidden player-content">
-                <div id="audioProgress" class="bg-cyan-500 w-0 h-full rounded-full transition-all"></div>
-            </div>
-            <audio id="mainAudio" src="juro.mp3" loop></audio>
         </div>
+    </div>
 
-        <!-- Kanji sutil de fondo -->
-        <div class="absolute bottom-4 left-4 text-6xl font-bold text-cyan-600 opacity-[0.05] pointer-events-none jp-text">
-            呪
-        </div>
-    </main>
+    <audio id="audio-element" loop>
+        <source src="musica.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
-        // --- PROTECCIÓN ---
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('dragstart', e => e.preventDefault());
-        document.addEventListener('keydown', e => {
-            if (e.keyCode === 123 || ((e.ctrlKey || e.metaKey) && (e.keyCode === 85 || e.keyCode === 83))) e.preventDefault();
+        const images = [
+            "https://i.pinimg.com/736x/35/d4/74/35d474753df6a5fa03db5fd5d47a0d48.jpg",
+            "https://i.pinimg.com/736x/fc/85/52/fc8552c0d4b9c5b922798651274ae0a6.jpg",
+            "https://i.pinimg.com/736x/1e/7d/27/1e7d27e7b1789b15fa8ea5994520d464.jpg",
+            "https://i.pinimg.com/736x/3f/cb/47/3fcb474229a46b866e6a078686cd9407.jpg",
+            "https://i.pinimg.com/736x/70/7a/c3/707ac39a64bf12f6bd49e39ebbc8c68b.jpg",
+            "https://i.pinimg.com/736x/d9/7d/a4/d97da43d34687c5d79496dd7a1079de6.jpg",
+            "https://i.pinimg.com/736x/f1/18/82/f11882e66e3f32901657392b1c3ca206.jpg",
+            "https://i.pinimg.com/736x/2e/1d/f6/2e1df67af440e9f9d951974935021a9e.jpg",
+            "https://i.pinimg.com/736x/a7/2e/71/a72e7198ed521ac93723df6e7cee3e30.jpg" // Última imagen cambiada
+        ];
+
+        const container = document.getElementById('main-container');
+        const startBtn = document.getElementById('start-btn');
+        const introScreen = document.getElementById('intro-screen');
+        const finalWrapper = document.getElementById('final-card-wrapper');
+        const finalCardElement = document.getElementById('final-card-element');
+        const audio = document.getElementById('audio-element');
+
+        images.forEach((url, index) => {
+            const div = document.createElement('div');
+            div.classList.add('char-box');
+            div.style.transitionDelay = `${index * 0.08}s`;
+            const img = document.createElement('img');
+            img.src = url;
+            div.appendChild(img);
+            const num = document.createElement('div');
+            num.style.position = 'absolute'; num.style.bottom = '10px'; num.style.right = '5px';
+            num.style.color = 'rgba(255,255,255,0.5)'; num.style.fontSize = '0.8rem';
+            num.innerText = `0${index + 1}`;
+            div.appendChild(num);
+            container.appendChild(div);
         });
 
-        // --- LÓGICA AMIGOS ---
-        const btnFriends = document.getElementById('toggleFriends');
-        const listFriends = document.getElementById('friendsList');
-        btnFriends.addEventListener('click', () => {
-            listFriends.classList.toggle('open');
-        });
+        startBtn.addEventListener('click', () => {
+            introScreen.classList.add('hidden');
+            audio.volume = 0.4;
+            audio.play().catch(() => {});
+            container.classList.add('active');
 
-        // --- LÓGICA REPRODUCTOR & AUTOPLAY ---
-        const musicPlayer = document.getElementById('musicPlayer');
-        const playBtn = document.getElementById('playPause');
-        const closeBtn = document.getElementById('closePlayer');
-        const discImg = document.getElementById('discImg');
-        const audio = document.getElementById('mainAudio');
-        const progress = document.getElementById('audioProgress');
-        let isPlaying = false; 
-        let minimizeTimeout;
-
-        // Inicia pausado visualmente
-        if (discImg) discImg.style.animationPlayState = 'paused';
-
-        const startMinimizeTimer = () => {
-            clearTimeout(minimizeTimeout);
-            minimizeTimeout = setTimeout(() => {
-                if (!musicPlayer.matches(':hover')) {
-                    musicPlayer.classList.add('minimized');
-                }
-            }, 4500);
-        };
-
-        const expand = () => {
-            musicPlayer.classList.remove('minimized');
-            startMinimizeTimer();
-        };
-
-        startMinimizeTimer();
-
-        // Expansión por interacción
-        musicPlayer.addEventListener('click', (e) => {
-            if (musicPlayer.classList.contains('minimized')) {
-                expand();
-                e.stopPropagation();
-            }
-        });
-        musicPlayer.addEventListener('mouseenter', () => {
-            musicPlayer.classList.remove('minimized');
-            clearTimeout(minimizeTimeout);
-        });
-        musicPlayer.addEventListener('mouseleave', () => startMinimizeTimer());
-        closeBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            musicPlayer.classList.add('minimized');
-        });
-        document.addEventListener('click', (e) => {
-            if (!musicPlayer.contains(e.target)) musicPlayer.classList.add('minimized');
-        });
-
-        // Función Maestra de Reproducción
-        const attemptPlay = () => {
-            if (isPlaying) return; // Si ya está sonando, no hacemos nada
-            
-            audio.play().then(() => {
-                isPlaying = true;
-                playBtn.className = 'fa-solid fa-pause text-cyan-200 text-[10px] cursor-pointer';
-                if (discImg) discImg.style.animationPlayState = 'running';
-                removeAutoplayListeners();
-            }).catch(err => {
-                console.log("Autoplay bloqueado por el navegador. Esperando interacción.");
+            const boxes = document.querySelectorAll('.char-box');
+            boxes.forEach((box, index) => {
+                setTimeout(() => box.classList.add('reveal'), index * 100);
             });
-        };
 
-        // Escuchadores para "Autoplay Forzado" tras interacción
-        const removeAutoplayListeners = () => {
-            document.removeEventListener('mousemove', attemptPlay);
-            document.removeEventListener('click', attemptPlay);
-            document.removeEventListener('touchstart', attemptPlay);
-            document.removeEventListener('scroll', attemptPlay);
-            window.removeEventListener('keydown', attemptPlay);
-        };
-
-        // Intentar sonar al cargar (falla habitualmente sin interacción previa)
-        window.addEventListener('load', () => {
-            setTimeout(attemptPlay, 100);
+            setTimeout(() => {
+                container.classList.add('dimmed');
+                finalWrapper.classList.add('show');
+                // Activar tormenta cuando se muestra la carta
+                setTimeout(() => {
+                    finalCardElement.classList.add('active-storm');
+                }, 500);
+            }, (images.length * 100) + 800);
         });
 
-        // Alternativa: Activar en cualquier interacción mínima
-        document.addEventListener('mousemove', attemptPlay, { once: false });
-        document.addEventListener('click', attemptPlay, { once: false });
-        document.addEventListener('touchstart', attemptPlay, { once: false });
-        document.addEventListener('scroll', attemptPlay, { once: false });
-        window.addEventListener('keydown', attemptPlay, { once: false });
-
-        // Control Manual Play/Pause
-        if(playBtn) {
-            playBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); 
-                if (isPlaying) {
-                    audio.pause();
-                    playBtn.className = 'fa-solid fa-play text-cyan-200 text-[10px] cursor-pointer';
-                    if (discImg) discImg.style.animationPlayState = 'paused';
-                    isPlaying = false;
-                } else {
-                    attemptPlay();
-                }
-                startMinimizeTimer();
-            });
-        }
-
-        audio.addEventListener('timeupdate', () => {
-            const percent = (audio.currentTime / audio.duration) * 100;
-            progress.style.width = percent + '%';
-        });
-
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('dragstart', event => event.preventDefault());
     </script>
 </body>
 </html>
