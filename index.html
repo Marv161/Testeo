@@ -55,7 +55,6 @@
         .intro-cover-container {
             width: 500px; max-width: 90vw; height: 280px;
             overflow: hidden;
-            /* Borde eliminado según solicitud */
             border: none; 
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
         }
@@ -167,15 +166,13 @@
             background-image: url('https://wallpapercave.com/wp/wp6751777.jpg');
             background-size: cover;
             background-position: center;
-            align-items: center;
-            justify-content: center;
         }
 
-        /* Overlay oscuro */
+        /* Overlay oscuro - REDUCIDO para resaltar fondo */
         .beige-card::before {
             content: '';
             position: absolute; inset: 0;
-            background: rgba(0, 0, 0, 0.75); 
+            background: rgba(0, 0, 0, 0.3); /* Opacidad reducida para más visibilidad */
             z-index: 1;
         }
 
@@ -184,9 +181,10 @@
             position: absolute; top: 15px; right: 20px;
             z-index: 50;
             background: transparent; border: none;
-            color: rgba(255,255,255,0.5);
+            color: rgba(255,255,255,0.7);
             font-size: 1.5rem; cursor: pointer;
             transition: all 0.3s ease;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
         }
         .close-btn:hover { color: #fff; transform: scale(1.1); text-shadow: 0 0 10px #fff; }
 
@@ -213,11 +211,9 @@
 
         /* --- SECCIÓN CONTENIDO --- */
         .text-section {
-            width: 100%; height: 100%; padding: 2rem;
-            display: flex; flex-direction: column; 
+            width: 100%; height: 100%; 
             position: relative;
             z-index: 10; background: transparent;
-            align-items: center; justify-content: center;
         }
 
         .thunder-container {
@@ -267,47 +263,75 @@
             animation-delay: 1s;
         }
 
-        /* --- TITULO VOID xHaz (FINAL) --- */
+        /* --- TITULO VOID xHAZ (CENTRO ABSOLUTO Y ESTÁTICO) --- */
         .main-name {
             font-family: 'Orbitron', sans-serif;
-            font-size: 6rem; font-weight: 900; line-height: 1;
+            /* Tamaño reducido un poco */
+            font-size: 5rem; 
+            font-weight: 900; line-height: 1;
             color: transparent; 
-            -webkit-text-stroke: 2px rgba(255,255,255,0.9);
-            margin-bottom: 2rem; position: relative; z-index: 20;
-            text-shadow: 0 0 20px rgba(255,255,255,0.2), 5px 0 0 rgba(255,0,0,0.3), -5px 0 0 rgba(0,0,255,0.3);
-            animation: voidGlitch 2.5s infinite alternate-reverse;
+            -webkit-text-stroke: 2px rgba(255,255,255,0.95); /* Borde más fuerte */
+            
+            position: absolute;
+            top: 50%; 
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+            z-index: 20;
+            white-space: nowrap;
+            
+            /* Sombra reforzada para leerse sobre el fondo más claro */
+            text-shadow: 
+                0 0 20px rgba(0,0,0,0.8), 
+                5px 0 0 rgba(255,0,0,0.3), 
+                -5px 0 0 rgba(0,0,255,0.3);
+            
+            animation: voidGlitchStatic 3s infinite alternate;
         }
 
         .main-name::before {
-            content: 'xHaz';
+            content: 'xHAZ'; /* Actualizado a MAYÚSCULAS */
             position: absolute; left: 0; top: 0;
-            color: rgba(255,255,255,0.1); filter: blur(4px); z-index: -1;
+            color: rgba(255,255,255,0.2); filter: blur(4px); z-index: -1;
         }
 
-        @keyframes voidGlitch {
-            0% { opacity: 1; transform: scale(1) skew(0deg); text-shadow: 0 0 10px rgba(255,255,255,0.1); }
-            20% { opacity: 0.8; transform: skew(-2deg); }
-            40% { opacity: 1; transform: skew(2deg); text-shadow: 2px 2px 0 #000; }
-            42% { opacity: 0.3; transform: translate(5px, 0); }
-            44% { opacity: 1; transform: translate(0, 0); }
-            60% { filter: blur(1px); }
-            80% { opacity: 0.9; transform: scale(1.02); }
-            90% { opacity: 0.1; } 
-            92% { opacity: 1; }
+        /* Nueva animación sin movimiento */
+        @keyframes voidGlitchStatic {
+            0% { opacity: 1; text-shadow: 0 0 10px rgba(0,0,0,0.8); filter: blur(0); }
+            20% { opacity: 0.95; text-shadow: 0 0 15px rgba(255,255,255,0.4); }
+            40% { opacity: 1; text-shadow: 2px 2px 0 rgba(0,0,0,0.8); }
+            60% { filter: blur(1px); opacity: 0.9; }
+            80% { opacity: 1; text-shadow: 0 0 20px rgba(255,255,255,0.6); }
             100% { opacity: 1; filter: blur(0); }
+        }
+
+        /* Contenedor para la parte inferior */
+        .bottom-content {
+            position: absolute;
+            bottom: 30px; 
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            /* Sombra de texto para asegurar legibilidad */
+            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
         }
 
         .details {
             font-family: 'Share Tech Mono', monospace;
-            color: #aaa; font-size: 1.2rem; letter-spacing: 0.2em;
-            border-top: 1px solid rgba(255,255,255,0.3); 
-            padding-top: 2rem; width: 80%;
-            display: flex; justify-content: space-around; z-index: 20;
+            color: #ccc; /* Un poco más claro */
+            font-size: 1.2rem; letter-spacing: 0.2em;
+            border-top: none; 
+            padding-top: 0.5rem; 
+            width: 100%;
+            display: flex; justify-content: center;
         }
 
         #user-status {
             font-weight: bold; transition: all 0.5s ease;
-            text-shadow: 0 0 5px currentColor;
+            text-shadow: 0 0 5px currentColor, 0 0 10px rgba(0,0,0,0.8);
         }
 
         .corner-deco { position: absolute; width: 20px; height: 20px; border: 2px solid white; transition: all 0.3s; z-index: 30; }
@@ -319,7 +343,7 @@
         @media (max-width: 768px) {
             #main-container { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); }
             .lightning-svg { width: 100%; height: 100%; }
-            .main-name { font-size: 4rem; }
+            .main-name { font-size: 3.5rem; }
             .toxic-title-intro { font-size: 4rem; }
             .details { flex-direction: column; align-items: center; gap: 10px; }
         }
@@ -364,14 +388,19 @@
             </div>
 
             <div class="text-section">
-                <h1 class="main-name">xHaz</h1>
-                <div class="details">
-                    <span id="user-status">CHECKING...</span>
-                </div>
-                <div class="mt-8 text-xs text-gray-400 font-mono z-20 text-center">
-                    <p>> SYSTEM CHECK... OK</p>
-                    <p>> LIGHTNING LINK... STABLE</p>
-                    <p>> WELCOME USER</p>
+                <!-- xHAZ Centrado y Estático -->
+                <h1 class="main-name">xHAZ</h1>
+                
+                <!-- Contenido Inferior -->
+                <div class="bottom-content">
+                    <div class="details">
+                        <span id="user-status">CHECKING...</span>
+                    </div>
+                    <div class="mt-4 text-xs text-gray-300 font-mono z-20 text-center" style="text-shadow: 0 1px 2px black;">
+                        <p>> SYSTEM CHECK... OK</p>
+                        <p>> LIGHTNING LINK... STABLE</p>
+                        <p>> WELCOME USER</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -400,8 +429,6 @@
         const finalWrapper = document.getElementById('final-card-wrapper');
         const finalCardElement = document.getElementById('final-card-element');
         const audio = document.getElementById('audio-element');
-        
-        // Elementos nuevos
         const closeBtn = document.getElementById('close-card-btn');
         const reopenBtn = document.getElementById('reopen-btn');
 
@@ -430,7 +457,6 @@
             }
         }
 
-        // Generar Grid
         images.forEach((url, index) => {
             const div = document.createElement('div');
             div.classList.add('char-box');
@@ -446,7 +472,6 @@
             container.appendChild(div);
         });
 
-        // Evento Iniciar
         startBtn.addEventListener('click', () => {
             introScreen.classList.add('hidden');
             audio.volume = 0.4;
@@ -470,23 +495,17 @@
             }, (images.length * 100) + 800);
         });
 
-        // Evento Cerrar Recuadro
         closeBtn.addEventListener('click', () => {
             finalWrapper.classList.remove('show');
             finalWrapper.classList.add('hidden-temp');
-            // Quitar el dimmed para ver mejor el fondo
             container.classList.remove('dimmed');
-            // Mostrar botón reabrir
             reopenBtn.classList.add('visible');
         });
 
-        // Evento Reabrir Perfil
         reopenBtn.addEventListener('click', () => {
             finalWrapper.classList.remove('hidden-temp');
             finalWrapper.classList.add('show');
-            // Volver a poner dimmed
             container.classList.add('dimmed');
-            // Ocultar botón reabrir
             reopenBtn.classList.remove('visible');
         });
 
