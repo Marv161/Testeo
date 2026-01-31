@@ -127,6 +127,24 @@
         }
         .admin-btn:hover { opacity: 1; }
 
+        /* Notificación de guardado */
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #ff2d85;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transform: translateY(100px);
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+        #toast.show { transform: translateY(0); }
+
         @media (max-width: 768px) {
             .brand-title { font-size: 2.5rem; }
         }
@@ -137,7 +155,7 @@
     <div class="bg-glow" style="top: -10%; left: -10%;"></div>
     <div class="bg-glow" style="bottom: -10%; right: -10%;"></div>
 
-    <!-- Header -->
+    <!-- Encabezado -->
     <header class="pt-16 pb-12 px-6 flex flex-col items-center justify-center text-center">
         <div class="flex items-center gap-6 mb-4 flex-wrap justify-center">
             <h1 class="brand-title">xPiitu</h1>
@@ -147,56 +165,58 @@
         <div class="w-24 h-1 bg-gradient-to-r from-transparent via-[#ff2d85] to-transparent mt-6"></div>
     </header>
 
-    <!-- Gallery Grid -->
+    <!-- Galería Principal -->
     <main class="container mx-auto px-4 pb-24">
         <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Loading state -->
-            <div class="col-span-full text-center py-20 text-zinc-700 animate-pulse">Cargando galería maestra...</div>
+            <div id="loading-msg" class="col-span-full text-center py-20 text-zinc-700 animate-pulse font-light tracking-widest">AUTENTICANDO Y SINCRONIZANDO GALERÍA...</div>
         </div>
     </main>
 
-    <!-- Footer -->
+    <!-- Pie de página -->
     <footer class="py-12 border-t border-zinc-900 text-center text-zinc-500 text-sm">
         <p>&copy; 2026 Xpiitu (1550479745)</p>
-        <button onclick="showLogin()" class="admin-btn mt-4 text-xs text-pink-900 uppercase tracking-widest">Panel de Control</button>
+        <button onclick="showLogin()" class="admin-btn mt-4 text-xs text-pink-900 uppercase tracking-widest hover:text-pink-600">Panel de Control</button>
     </footer>
 
-    <!-- Admin Login Modal -->
+    <!-- Modal Login de Admin -->
     <div id="login-modal" class="fixed inset-0 bg-black/80 z-[60] hidden flex items-center justify-center p-4">
         <div class="glass-panel p-8 rounded-lg max-w-sm w-full text-center">
-            <h2 class="text-pink-500 mb-4 font-bold tracking-widest">ACCESO ADMIN</h2>
-            <input type="password" id="admin-password" placeholder="Contraseña..." class="mb-4">
+            <h2 class="text-pink-500 mb-4 font-bold tracking-widest uppercase text-sm">Acceso Propietario</h2>
+            <input type="password" id="admin-password" placeholder="Contraseña..." class="mb-4 text-center">
             <div class="flex gap-2">
-                <button onclick="closeModals()" class="flex-1 px-4 py-2 border border-zinc-700 text-xs">CANCELAR</button>
-                <button onclick="checkPassword()" class="flex-1 px-4 py-2 bg-pink-600 text-xs font-bold">ENTRAR</button>
+                <button onclick="closeModals()" class="flex-1 px-4 py-2 border border-zinc-700 text-[10px] tracking-widest">CANCELAR</button>
+                <button onclick="checkPassword()" class="flex-1 px-4 py-2 bg-pink-600 text-[10px] font-bold tracking-widest">ENTRAR</button>
             </div>
         </div>
     </div>
 
-    <!-- Admin Editor Panel -->
+    <!-- Panel de Editor Admin -->
     <div id="editor-panel" class="fixed inset-0 bg-black z-[70] hidden overflow-y-auto p-4 md:p-12">
         <div class="container mx-auto">
-            <div class="flex justify-between items-center mb-8 sticky top-0 bg-black/80 py-4 z-10">
-                <h2 class="text-2xl font-bold text-pink-500">EDITOR DE GALERÍA</h2>
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 sticky top-0 bg-black/90 backdrop-blur-sm py-4 z-10 border-b border-zinc-900">
+                <h2 class="text-xl font-bold text-pink-500 mb-4 md:mb-0 tracking-widest">GESTOR DE GALERÍA</h2>
                 <div class="flex gap-4">
-                    <button onclick="closeModals()" class="px-6 py-2 border border-zinc-700 text-sm">CERRAR</button>
-                    <button id="save-btn" class="px-6 py-2 bg-pink-600 text-sm font-bold shadow-lg shadow-pink-900/20">GUARDAR CAMBIOS</button>
+                    <button onclick="closeModals()" class="px-6 py-2 border border-zinc-700 text-xs tracking-widest">CERRAR SIN GUARDAR</button>
+                    <button id="save-btn" class="px-6 py-2 bg-pink-600 text-xs font-bold tracking-widest shadow-lg shadow-pink-900/20">GUARDAR TODOS LOS CAMBIOS</button>
                 </div>
             </div>
-            <div id="editor-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Inputs generated here -->
+            <div id="editor-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
+                <!-- Inputs generados aquí -->
             </div>
         </div>
     </div>
 
-    <!-- Zoom View Modal -->
+    <!-- Modal de Vista Expandida -->
     <div id="modal" class="fixed inset-0 bg-black/95 z-50 hidden flex items-center justify-center p-4 cursor-zoom-out">
         <img id="modal-img" src="" alt="Zoom" class="max-w-full max-h-full rounded shadow-2xl border border-pink-600/30" oncontextmenu="return false;" ondragstart="return false;">
     </div>
 
+    <!-- Mensaje Toast -->
+    <div id="toast">¡CAMBIOS GUARDADOS EN LA NUBE!</div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Configuración real de tu proyecto xpiitu-3866d
@@ -212,10 +232,12 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = "xpiitu-3866d"; // Usamos tu ID de proyecto como identificador de ruta
+        const appId = "xpiitu-3866d";
 
         let currentGifs = [];
+        let unsubscribe = null;
         const DEFAULT_PASSWORD = "admin123";
+
         const INITIAL_LINKS = [
             "https://xatimg.com/image/RRAUo3JmiNLG.gif", "https://xatimg.com/image/HnobGMzks2S8.gif",
             "https://xatimg.com/image/3oLcXJNc15Ny.gif", "https://xatimg.com/image/zjrKRWfDbXK5.gif",
@@ -234,43 +256,61 @@
             "https://xatimg.com/image/5e9hQhC0nQpH.gif", "https://xatimg.com/image/Y9MCXVKMqTOH.gif"
         ];
 
-        // --- AUTH & FIREBASE LOGIC ---
-        const init = async () => {
+        // --- MANEJO DE AUTENTICACIÓN ---
+        const initAuth = async () => {
             try {
                 await signInAnonymously(auth);
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'gallery_settings');
-                
-                // Escucha cambios en tiempo real
-                onSnapshot(docRef, (snap) => {
-                    if (snap.exists()) {
-                        currentGifs = snap.data().links;
-                    } else {
-                        // Si no existe el documento en Firebase, lo crea por primera vez
-                        currentGifs = INITIAL_LINKS;
-                        saveToCloud(currentGifs);
-                    }
-                    renderGallery(currentGifs);
-                    renderEditor(currentGifs);
-                }, (error) => {
-                    console.error("Error en Firebase Sync:", error);
-                });
             } catch (err) {
-                console.error("Fallo de conexión inicial:", err);
+                console.error("Error en autenticación:", err);
+                const loader = document.getElementById('loading-msg');
+                if (loader) loader.innerText = "ERROR DE CONEXIÓN. REVISA TU FIREBASE.";
             }
+        };
+
+        // Escuchar cambios de estado de auth para iniciar Firestore
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                startFirestoreListener();
+            }
+        });
+
+        const startFirestoreListener = () => {
+            if (unsubscribe) unsubscribe();
+
+            // Ruta de 6 segmentos compatible con Firestore
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'gallery_config', 'settings');
+            
+            unsubscribe = onSnapshot(docRef, (snap) => {
+                if (snap.exists()) {
+                    currentGifs = snap.data().links;
+                } else {
+                    currentGifs = INITIAL_LINKS;
+                    saveToCloud(currentGifs);
+                }
+                renderGallery(currentGifs);
+                renderEditor(currentGifs);
+            }, (error) => {
+                console.error("Error Firestore:", error);
+                const loader = document.getElementById('loading-msg');
+                if (loader) {
+                    loader.innerHTML = `<div class='text-red-500'>ERROR DE PERMISOS FIRESTORE<br><span class='text-[10px] text-zinc-500'>Verifica las reglas en tu consola de Firebase.</span></div>`;
+                }
+            });
         };
 
         const saveToCloud = async (links) => {
             if (!auth.currentUser) return;
-            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'gallery_settings');
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'gallery_config', 'settings');
             try {
                 await setDoc(docRef, { links });
+                showToast();
             } catch (e) {
-                console.error("Error guardando datos:", e);
-                alert("Error al guardar. Verifica las reglas de Firestore.");
+                console.error("Error al guardar:", e);
+                alert("No se pudo guardar. Revisa las reglas de escritura en Firebase.");
             }
         };
 
-        // --- RENDER FUNCTIONS ---
+        // --- FUNCIONES DE INTERFAZ ---
         function renderGallery(links) {
             const grid = document.getElementById('gallery-grid');
             grid.innerHTML = '';
@@ -279,7 +319,7 @@
                 frame.className = 'art-frame cursor-zoom-in';
                 frame.innerHTML = `
                     <div class="gif-container">
-                        <img src="${url}" alt="Obra ${index + 1}" loading="lazy" ondragstart="return false;">
+                        <img src="${url}" alt="Animación ${index + 1}" loading="lazy" ondragstart="return false;">
                     </div>
                     <div class="absolute bottom-4 left-4 z-20 opacity-0 transform translate-y-4 transition-all duration-300 art-label">
                         <span class="bg-black/80 backdrop-blur-md px-3 py-1 text-[10px] uppercase tracking-widest text-pink-400 border border-pink-900/50">Obra #${index + 1}</span>
@@ -295,16 +335,25 @@
             grid.innerHTML = '';
             links.forEach((url, index) => {
                 const div = document.createElement('div');
-                div.className = 'flex flex-col gap-1 p-3 bg-zinc-900/50 rounded border border-zinc-800';
+                div.className = 'flex flex-col gap-2 p-4 bg-zinc-900/40 rounded border border-zinc-800 hover:border-pink-900/50 transition-colors';
                 div.innerHTML = `
-                    <label class="text-[10px] text-pink-500 font-bold uppercase tracking-tighter">Imagen #${index + 1}</label>
-                    <input type="text" class="link-input" data-index="${index}" value="${url}" oncontextmenu="event.stopPropagation()">
+                    <div class="flex justify-between items-center">
+                        <label class="text-[10px] text-pink-500 font-bold uppercase tracking-widest">ESPACIO #${index + 1}</label>
+                        <span class="text-[9px] text-zinc-600">730x486 px</span>
+                    </div>
+                    <input type="text" class="link-input" data-index="${index}" value="${url}" placeholder="Pega el link del GIF aquí...">
                 `;
                 grid.appendChild(div);
             });
         }
 
-        // --- INTERFACE FUNCTIONS ---
+        function showToast() {
+            const t = document.getElementById('toast');
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        // --- ACCIONES GLOBALES ---
         window.showLogin = () => document.getElementById('login-modal').classList.remove('hidden');
         
         window.closeModals = () => {
@@ -322,7 +371,7 @@
                 document.getElementById('admin-password').value = '';
                 document.body.style.overflow = 'hidden';
             } else {
-                alert("Acceso Denegado");
+                alert("CONTRASEÑA INCORRECTA");
             }
         };
 
@@ -332,9 +381,12 @@
                 .sort((a,b) => a.dataset.index - b.dataset.index)
                 .map(i => i.value);
             
-            document.getElementById('save-btn').innerText = "GUARDANDO...";
+            const btn = document.getElementById('save-btn');
+            btn.disabled = true;
+            btn.innerText = "PROCESANDO...";
             await saveToCloud(newLinks);
-            document.getElementById('save-btn').innerText = "GUARDAR CAMBIOS";
+            btn.disabled = false;
+            btn.innerText = "GUARDAR TODOS LOS CAMBIOS";
             closeModals();
         };
 
@@ -345,7 +397,7 @@
             document.body.style.overflow = 'hidden';
         };
 
-        // --- SECURITY LOCKS ---
+        // --- SEGURIDAD ADICIONAL ---
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('dragstart', e => { if (e.target.tagName === 'IMG') e.preventDefault(); });
         document.addEventListener('keydown', (e) => {
@@ -354,8 +406,7 @@
             }
         });
 
-        // Arranque
-        init();
+        initAuth();
     </script>
 </body>
 </html>
