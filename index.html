@@ -286,7 +286,12 @@
             
             unsubscribe = onSnapshot(docRef, (snap) => {
                 if (snap.exists()) {
-                    currentData = snap.data();
+                    const data = snap.data();
+                    // Robustez: Si el password no existe en el documento, usamos el default
+                    currentData = {
+                        links: data.links || INITIAL_LINKS,
+                        password: data.password || "admin123"
+                    };
                 } else {
                     currentData = { links: INITIAL_LINKS, password: "admin123" };
                     saveToCloud(currentData);
@@ -384,7 +389,10 @@
                 const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'gallery_config', 'settings');
                 const snap = await getDoc(docRef);
                 
-                const validPassword = snap.exists() ? snap.data().password : "admin123";
+                let validPassword = "admin123";
+                if (snap.exists()) {
+                    validPassword = snap.data().password || "admin123";
+                }
 
                 if (inputPass === validPassword) {
                     document.getElementById('login-modal').classList.add('hidden');
