@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xPiitu | GALERÍA</title>
+    <title>xPiitu | GALERÍA de Animación</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -127,7 +127,6 @@
         }
         .admin-btn:hover { opacity: 1; }
 
-        /* Notificación de guardado */
         #toast {
             position: fixed;
             bottom: 20px;
@@ -185,7 +184,7 @@
             <input type="password" id="admin-password" placeholder="Contraseña..." class="mb-4 text-center">
             <div class="flex gap-2">
                 <button onclick="closeModals()" class="flex-1 px-4 py-2 border border-zinc-700 text-[10px] tracking-widest">CANCELAR</button>
-                <button onclick="checkPassword()" class="flex-1 px-4 py-2 bg-pink-600 text-[10px] font-bold tracking-widest">ENTRAR</button>
+                <button onclick="checkPassword()" id="login-btn-confirm" class="flex-1 px-4 py-2 bg-pink-600 text-[10px] font-bold tracking-widest">ENTRAR</button>
             </div>
         </div>
     </div>
@@ -196,10 +195,21 @@
             <div class="flex flex-col md:flex-row justify-between items-center mb-8 sticky top-0 bg-black/90 backdrop-blur-sm py-4 z-10 border-b border-zinc-900">
                 <h2 class="text-xl font-bold text-pink-500 mb-4 md:mb-0 tracking-widest">GESTOR DE GALERÍA</h2>
                 <div class="flex gap-4">
-                    <button onclick="closeModals()" class="px-6 py-2 border border-zinc-700 text-xs tracking-widest">CERRAR SIN GUARDAR</button>
-                    <button id="save-btn" class="px-6 py-2 bg-pink-600 text-xs font-bold tracking-widest shadow-lg shadow-pink-900/20">GUARDAR TODOS LOS CAMBIOS</button>
+                    <button onclick="closeModals()" class="px-6 py-2 border border-zinc-700 text-xs tracking-widest">CERRAR</button>
+                    <button id="save-btn" class="px-6 py-2 bg-pink-600 text-xs font-bold tracking-widest shadow-lg shadow-pink-900/20">GUARDAR TODO</button>
                 </div>
             </div>
+
+            <!-- Ajustes de Seguridad -->
+            <div class="mb-10 p-6 bg-zinc-900/40 rounded border border-pink-900/20 max-w-md">
+                <h3 class="text-pink-400 text-[10px] font-bold tracking-widest uppercase mb-4">Seguridad de Acceso</h3>
+                <div class="flex flex-col gap-2">
+                    <label class="text-[9px] text-zinc-500 uppercase italic">Nueva Contraseña del Panel</label>
+                    <input type="text" id="new-password-input" class="border-pink-900/30" placeholder="Escribe nueva clave...">
+                    <p class="text-[8px] text-zinc-600 mt-1">* Nota: Cambia esto solo si quieres actualizar tu acceso.</p>
+                </div>
+            </div>
+
             <div id="editor-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
                 <!-- Inputs generados aquí -->
             </div>
@@ -217,9 +227,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Configuración real de tu proyecto xpiitu-3866d
         const firebaseConfig = {
             apiKey: "AIzaSyBk5MErob-r8LTMTZP80uXodmLgXcryn2s",
             authDomain: "xpiitu-3866d.firebaseapp.com",
@@ -234,9 +243,8 @@
         const db = getFirestore(app);
         const appId = "xpiitu-3866d";
 
-        let currentGifs = [];
+        let currentData = { links: [], password: "admin123" };
         let unsubscribe = null;
-        const DEFAULT_PASSWORD = "admin123";
 
         const INITIAL_LINKS = [
             "https://xatimg.com/image/RRAUo3JmiNLG.gif", "https://xatimg.com/image/HnobGMzks2S8.gif",
@@ -262,12 +270,9 @@
                 await signInAnonymously(auth);
             } catch (err) {
                 console.error("Error en autenticación:", err);
-                const loader = document.getElementById('loading-msg');
-                if (loader) loader.innerText = "ERROR DE CONEXIÓN. REVISA TU FIREBASE.";
             }
         };
 
-        // Escuchar cambios de estado de auth para iniciar Firestore
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 startFirestoreListener();
@@ -277,42 +282,40 @@
         const startFirestoreListener = () => {
             if (unsubscribe) unsubscribe();
 
-            // Ruta de 6 segmentos compatible con Firestore
             const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'gallery_config', 'settings');
             
             unsubscribe = onSnapshot(docRef, (snap) => {
                 if (snap.exists()) {
-                    currentGifs = snap.data().links;
+                    currentData = snap.data();
                 } else {
-                    currentGifs = INITIAL_LINKS;
-                    saveToCloud(currentGifs);
+                    currentData = { links: INITIAL_LINKS, password: "admin123" };
+                    saveToCloud(currentData);
                 }
-                renderGallery(currentGifs);
-                renderEditor(currentGifs);
+                renderGallery(currentData.links);
+                renderEditor(currentData);
             }, (error) => {
                 console.error("Error Firestore:", error);
-                const loader = document.getElementById('loading-msg');
-                if (loader) {
-                    loader.innerHTML = `<div class='text-red-500'>ERROR DE PERMISOS FIRESTORE<br><span class='text-[10px] text-zinc-500'>Verifica las reglas en tu consola de Firebase.</span></div>`;
-                }
+                const msg = document.getElementById('loading-msg');
+                if (msg) msg.innerText = "ERROR DE PERMISOS FIRESTORE.";
             });
         };
 
-        const saveToCloud = async (links) => {
+        const saveToCloud = async (data) => {
             if (!auth.currentUser) return;
             const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'gallery_config', 'settings');
             try {
-                await setDoc(docRef, { links });
+                await setDoc(docRef, data);
                 showToast();
             } catch (e) {
                 console.error("Error al guardar:", e);
-                alert("No se pudo guardar. Revisa las reglas de escritura en Firebase.");
+                alert("Error de escritura en Firebase.");
             }
         };
 
         // --- FUNCIONES DE INTERFAZ ---
         function renderGallery(links) {
             const grid = document.getElementById('gallery-grid');
+            if (!grid) return;
             grid.innerHTML = '';
             links.forEach((url, index) => {
                 const frame = document.createElement('div');
@@ -330,18 +333,23 @@
             });
         }
 
-        function renderEditor(links) {
+        function renderEditor(data) {
             const grid = document.getElementById('editor-grid');
+            if (!grid) return;
             grid.innerHTML = '';
-            links.forEach((url, index) => {
+            
+            // Cargar clave actual en el input de seguridad
+            document.getElementById('new-password-input').value = data.password;
+
+            data.links.forEach((url, index) => {
                 const div = document.createElement('div');
                 div.className = 'flex flex-col gap-2 p-4 bg-zinc-900/40 rounded border border-zinc-800 hover:border-pink-900/50 transition-colors';
                 div.innerHTML = `
                     <div class="flex justify-between items-center">
                         <label class="text-[10px] text-pink-500 font-bold uppercase tracking-widest">ESPACIO #${index + 1}</label>
-                        <span class="text-[9px] text-zinc-600">730x486 px</span>
+                        <span class="text-[9px] text-zinc-600">GIF LINK</span>
                     </div>
-                    <input type="text" class="link-input" data-index="${index}" value="${url}" placeholder="Pega el link del GIF aquí...">
+                    <input type="text" class="link-input" data-index="${index}" value="${url}">
                 `;
                 grid.appendChild(div);
             });
@@ -349,6 +357,7 @@
 
         function showToast() {
             const t = document.getElementById('toast');
+            if (!t) return;
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 3000);
         }
@@ -363,15 +372,33 @@
             document.body.style.overflow = 'auto';
         };
 
-        window.checkPassword = () => {
-            const pass = document.getElementById('admin-password').value;
-            if (pass === DEFAULT_PASSWORD) {
-                document.getElementById('login-modal').classList.add('hidden');
-                document.getElementById('editor-panel').classList.remove('hidden');
+        window.checkPassword = async () => {
+            const inputPass = document.getElementById('admin-password').value;
+            const btn = document.getElementById('login-btn-confirm');
+            
+            btn.innerText = "VERIFICANDO...";
+            btn.disabled = true;
+
+            try {
+                // Consultamos el documento de nuevo para asegurar que tenemos la clave más reciente
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'gallery_config', 'settings');
+                const snap = await getDoc(docRef);
+                
+                const validPassword = snap.exists() ? snap.data().password : "admin123";
+
+                if (inputPass === validPassword) {
+                    document.getElementById('login-modal').classList.add('hidden');
+                    document.getElementById('editor-panel').classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    alert("CONTRASEÑA INCORRECTA");
+                }
+            } catch (e) {
+                alert("Error de conexión al verificar clave.");
+            } finally {
+                btn.innerText = "ENTRAR";
+                btn.disabled = false;
                 document.getElementById('admin-password').value = '';
-                document.body.style.overflow = 'hidden';
-            } else {
-                alert("CONTRASEÑA INCORRECTA");
             }
         };
 
@@ -381,12 +408,19 @@
                 .sort((a,b) => a.dataset.index - b.dataset.index)
                 .map(i => i.value);
             
+            const newPassword = document.getElementById('new-password-input').value || currentData.password;
+            
             const btn = document.getElementById('save-btn');
             btn.disabled = true;
-            btn.innerText = "PROCESANDO...";
-            await saveToCloud(newLinks);
+            btn.innerText = "GUARDANDO...";
+            
+            await saveToCloud({
+                links: newLinks,
+                password: newPassword
+            });
+            
             btn.disabled = false;
-            btn.innerText = "GUARDAR TODOS LOS CAMBIOS";
+            btn.innerText = "GUARDAR TODO";
             closeModals();
         };
 
@@ -397,7 +431,7 @@
             document.body.style.overflow = 'hidden';
         };
 
-        // --- SEGURIDAD ADICIONAL ---
+        // --- SEGURIDAD ---
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('dragstart', e => { if (e.target.tagName === 'IMG') e.preventDefault(); });
         document.addEventListener('keydown', (e) => {
